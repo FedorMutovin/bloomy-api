@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_05_160905) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_05_215855) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "event_relationships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "triggerable_type"
+    t.uuid "triggerable_id"
+    t.string "impactable_type"
+    t.uuid "impactable_id"
+    t.string "relation_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["impactable_type", "impactable_id"], name: "index_event_relationships_on_impactable"
+    t.index ["triggerable_type", "triggerable_id"], name: "index_event_relationships_on_triggerable"
+  end
 
   create_table "goals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false

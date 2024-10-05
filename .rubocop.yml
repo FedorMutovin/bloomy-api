@@ -5,14 +5,13 @@ require:
   - rubocop-rspec
   - rubocop-factory_bot
   - rubocop-rspec_rails
+  - rubocop-graphql
 AllCops:
   NewCops: enable
   Exclude:
     - 'db/**/*'
     - 'script/**/*'
     - 'bin/**/*'
-    - 'node_modules/**/*'
-    - 'config/initializers/devise.rb'
 
 Metrics/BlockLength:
   Exclude:

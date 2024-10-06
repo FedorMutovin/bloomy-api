@@ -8,6 +8,7 @@ env:
   POSTGRESQL_USERNAME: postgres
   POSTGRESQL_PASSWORD: postgres
   POSTGRES_DB: postgres
+  BUNDLE_PATH: ./vendor/bundle
 
 jobs:
   rspec-test:
@@ -38,7 +39,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/docker_cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
+          key: ${{ runner.os }}-docker-${{ hashFiles('Dockerfile', '.dockerdev/Dockerfile', 'Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-docker-
 
@@ -56,19 +57,35 @@ jobs:
             RUBY_VERSION=3.3.5
             PG_MAJOR=16
 
+      - name: Cache bundle
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-bundle-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bundle-
+
       - name: Run tests in Docker
+        env:
+          POSTGRES_USER: ${{ env.POSTGRESQL_USERNAME }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
+          RAILS_ENV: test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          BUNDLE_PATH: /app/vendor/bundle
         run: |
           docker run -d --name bloomy-api-container \
-            -e POSTGRES_USER=${{ env.POSTGRESQL_USERNAME }} \
-            -e POSTGRES_PASSWORD=${{ env.POSTGRESQL_PASSWORD }} \
-            -e RAILS_ENV=test \
-            -e RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }} \
+            -e POSTGRES_USER \
+            -e POSTGRES_PASSWORD \
+            -e RAILS_ENV \
+            -e RAILS_MASTER_KEY \
+            -e BUNDLE_PATH \
             --network host \
+            -v ${{ github.workspace }}/vendor/bundle:/app/vendor/bundle \
             bloomy-api-ci:latest tail -f /dev/null
 
           docker exec bloomy-api-container bash -c "
             cp config/database.yml.github-actions config/database.yml &&
-            bundle install &&
+            bundle install --path ${BUNDLE_PATH} &&
             bundle exec rails db:create db:schema:load &&
             COVERAGE=true bundle exec rspec --tag passing --require rails_helper
           "
@@ -94,7 +111,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/docker_cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
+          key: ${{ runner.os }}-docker-${{ hashFiles('Dockerfile', '.dockerdev/Dockerfile', 'Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-docker-
 
@@ -112,12 +129,25 @@ jobs:
             RUBY_VERSION=3.3.5
             PG_MAJOR=16
 
+      - name: Cache bundle
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-bundle-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bundle-
+
       - name: Run Rubocop
+        env:
+          BUNDLE_PATH: /app/vendor/bundle
         run: |
-          docker run bloomy-api-ci:latest bash -c "
-            bundle install &&
-            bundle exec rubocop
-          "
+          docker run --rm \
+            -e BUNDLE_PATH \
+            -v ${{ github.workspace }}/vendor/bundle:/app/vendor/bundle \
+            bloomy-api-ci:latest bash -c "
+              bundle install --path ${BUNDLE_PATH} &&
+              bundle exec rubocop
+            "
 
   brakeman:
     name: Brakeman
@@ -133,7 +163,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/docker_cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
+          key: ${{ runner.os }}-docker-${{ hashFiles('Dockerfile', '.dockerdev/Dockerfile', 'Gemfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-docker-
 
@@ -151,9 +181,22 @@ jobs:
             RUBY_VERSION=3.3.5
             PG_MAJOR=16
 
+      - name: Cache bundle
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-bundle-${{ hashFiles('Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bundle-
+
       - name: Run Brakeman
+        env:
+          BUNDLE_PATH: /app/vendor/bundle
         run: |
-          docker run bloomy-api-ci:latest bash -c "
-            bundle install &&
-            bin/brakeman
-          "
+          docker run --rm \
+            -e BUNDLE_PATH \
+            -v ${{ github.workspace }}/vendor/bundle:/app/vendor/bundle \
+            bloomy-api-ci:latest bash -c "
+              bundle install --path ${BUNDLE_PATH} &&
+              bin/brakeman
+            "

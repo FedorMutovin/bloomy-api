@@ -65,13 +65,13 @@ ENV RAILS_ENV=development
 
 # We may have development-only system dependencies (like Vim or graphviz).
 # We extract them into the Aptfile.dev file.
-COPY Aptfile.dev /tmp/Aptfile.dev
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt,sharing=locked \
-  --mount=type=tmpfs,target=/var/log \
-  apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-    $(grep -Ev '^\s*#' /tmp/Aptfile.dev | xargs)
+#COPY Aptfile.dev /tmp/Aptfile.dev
+#RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+#  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+#  --mount=type=tmpfs,target=/var/log \
+#  apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade && \
+#  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+#    $(grep -Ev '^\s*#' /tmp/Aptfile.dev | xargs)
 
 # The production-builder image is responsible for installing dependencies and compiling assets
 FROM base as production-builder

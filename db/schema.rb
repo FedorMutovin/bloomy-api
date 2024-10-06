@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_06_123644) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_06_171028) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -108,12 +108,30 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_123644) do
     t.index ["user_id"], name: "index_thoughts_on_user_id"
   end
 
+  create_table "travels", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.text "description"
+    t.string "destination", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "vacation_id"
+    t.index ["user_id"], name: "index_travels_on_user_id"
+    t.index ["vacation_id"], name: "index_travels_on_vacation_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+  end
+
+  create_table "vacations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_vacations_on_user_id"
   end
 
   create_table "versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -136,4 +154,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_123644) do
   add_foreign_key "tasks", "goals"
   add_foreign_key "tasks", "users"
   add_foreign_key "thoughts", "users"
+  add_foreign_key "travels", "users"
+  add_foreign_key "vacations", "users"
 end

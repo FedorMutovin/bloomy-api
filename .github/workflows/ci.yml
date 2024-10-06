@@ -1,4 +1,4 @@
-name: Rails tests
+name: Rails CI
 on:
   push:
     branches:
@@ -31,24 +31,52 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      # Кэширование слоёв Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: ~/docker_cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
       - name: Build Docker image (development)
-        run: docker build -t bloomy-api-ci --target development -f .dockerdev/Dockerfile .
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: .dockerdev/Dockerfile
+          target: development
+          tags: bloomy-api-ci:latest
+          cache-from: type=local,src=~/docker_cache
+          cache-to: type=local,dest=~/docker_cache,mode=max
 
-      - name: Install dependencies
-        run: docker run bloomy-api-ci bash -c "bundle install"
+      # Запуск контейнера и выполнение команд внутри него
+      - name: Run tests in Docker
+        run: |
+          docker run -d --name bloomy-api-container \
+            -e POSTGRES_USER=${{ env.POSTGRESQL_USERNAME }} \
+            -e POSTGRES_PASSWORD=${{ env.POSTGRESQL_PASSWORD }} \
+            -e RAILS_ENV=test \
+            -e RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }} \
+            --network host \
+            bloomy-api-ci:latest tail -f /dev/null
 
-      - name: Setup Database
-        run: docker run -e POSTGRES_USER=${{ env.POSTGRESQL_USERNAME }} \
-          -e POSTGRES_PASSWORD=${{ env.POSTGRESQL_PASSWORD }} \
-          -e RAILS_ENV=test \
-          bloomy-api-ci bash -c "cp config/database.yml.github-actions config/database.yml && bundle exec rails db:create db:schema:load"
-
-      - name: Run tests
-        run: docker run -e POSTGRES_USER=${{ env.POSTGRESQL_USERNAME }} \
-          -e POSTGRES_PASSWORD=${{ env.POSTGRESQL_PASSWORD }} \
-          -e RAILS_ENV=test \
-          -e RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }} \
-          bloomy-api-ci bash -c "bundle exec rspec --tag passing --require rails_helper"
+          docker exec bloomy-api-container bash -c "
+            cp config/database.yml.github-actions config/database.yml &&
+            bundle install &&
+            bundle exec rails db:create db:schema:load &&
+            COVERAGE=true bundle exec rspec --tag passing --require rails_helper
+          "
+      # Сбор отчета о покрытии
+      - name: Upload coverage results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage report
+          path: coverage
 
   rubocop-test:
     name: Rubocop
@@ -57,8 +85,34 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      # Кэширование слоёв Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: ~/docker_cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - name: Build Docker image (development)
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: .dockerdev/Dockerfile
+          target: development
+          tags: bloomy-api-ci:latest
+          cache-from: type=local,src=~/docker_cache
+          cache-to: type=local,dest=~/docker_cache,mode=max
+
       - name: Run Rubocop
-        run: docker run bloomy-api-ci bash -c "bundle exec rubocop"
+        run: |
+          docker run bloomy-api-ci:latest bash -c "
+            bundle install &&
+            bundle exec rubocop
+          "
 
   brakeman:
     name: Brakeman
@@ -67,5 +121,31 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      # Кэширование слоёв Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: ~/docker_cache
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - name: Build Docker image (development)
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: .dockerdev/Dockerfile
+          target: development
+          tags: bloomy-api-ci:latest
+          cache-from: type=local,src=~/docker_cache
+          cache-to: type=local,dest=~/docker_cache,mode=max
+
       - name: Run Brakeman
-        run: docker run bloomy-api-ci bash -c "bin/brakeman"
+        run: |
+          docker run bloomy-api-ci:latest bash -c "
+            bundle install &&
+            bin/brakeman
+          "

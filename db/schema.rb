@@ -10,10 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_05_215855) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_06_012155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "goal_id"
+    t.uuid "user_id"
+    t.uuid "task_id"
+    t.index ["goal_id"], name: "index_actions_on_goal_id"
+    t.index ["task_id"], name: "index_actions_on_task_id"
+    t.index ["user_id"], name: "index_actions_on_user_id"
+  end
+
+  create_table "decisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.text "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id"
+    t.index ["user_id"], name: "index_decisions_on_user_id"
+  end
 
   create_table "event_relationships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "triggerable_type"
@@ -32,7 +54,31 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_05_215855) do
     t.uuid "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "completed", default: false, null: false
+    t.datetime "completed_at"
     t.index ["user_id"], name: "index_goals_on_user_id"
+  end
+
+  create_table "hobbies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "skill_level", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id"
+    t.index ["user_id"], name: "index_hobbies_on_user_id"
+  end
+
+  create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "goal_id"
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "completed", default: false, null: false
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["goal_id"], name: "index_tasks_on_goal_id"
+    t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -43,5 +89,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_05_215855) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "actions", "goals"
+  add_foreign_key "actions", "tasks"
+  add_foreign_key "actions", "users"
+  add_foreign_key "decisions", "users"
   add_foreign_key "goals", "users"
+  add_foreign_key "hobbies", "users"
+  add_foreign_key "tasks", "goals"
+  add_foreign_key "tasks", "users"
 end

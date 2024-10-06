@@ -31,7 +31,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      # Кэширование слоёв Docker
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -52,8 +51,10 @@ jobs:
           tags: bloomy-api-ci:latest
           cache-from: type=local,src=~/docker_cache
           cache-to: type=local,dest=~/docker_cache,mode=max
+          build-args: |
+            RUBY_VERSION: '3.3.5'
+            PG_MAJOR: '16'
 
-      # Запуск контейнера и выполнение команд внутри него
       - name: Run tests in Docker
         run: |
           docker run -d --name bloomy-api-container \
@@ -70,7 +71,7 @@ jobs:
             bundle exec rails db:create db:schema:load &&
             COVERAGE=true bundle exec rspec --tag passing --require rails_helper
           "
-      # Сбор отчета о покрытии
+
       - name: Upload coverage results
         uses: actions/upload-artifact@v3
         if: always()
@@ -85,7 +86,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      # Кэширование слоёв Docker
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -121,7 +121,6 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      # Кэширование слоёв Docker
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 

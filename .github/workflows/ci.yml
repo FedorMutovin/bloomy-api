@@ -1,23 +1,71 @@
-name: CI
-
+name: Rails tests
 on:
-  pull_request:
   push:
-    branches: [ main ]
+    branches:
+      - '**'
+
+env:
+  POSTGRESQL_USERNAME: postgres
+  POSTGRESQL_PASSWORD: postgres
+  POSTGRES_DB: postgres
 
 jobs:
-  scan_ruby:
+  rspec-test:
+    name: Rspec
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        env:
+          POSTGRES_USER: ${{ env.POSTGRESQL_USERNAME }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v3
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
+      - name: Build Docker image (development)
+        run: docker build -t bloomy-api-ci --target development -f .dockerdev/Dockerfile .
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
+      - name: Install dependencies
+        run: docker run bloomy-api-ci bash -c "bundle install"
+
+      - name: Setup Database
+        run: docker run -e POSTGRES_USER=${{ env.POSTGRESQL_USERNAME }} \
+          -e POSTGRES_PASSWORD=${{ env.POSTGRESQL_PASSWORD }} \
+          -e RAILS_ENV=test \
+          bloomy-api-ci bash -c "cp config/database.yml.github-actions config/database.yml && bundle exec rails db:create db:schema:load"
+
+      - name: Run tests
+        run: docker run -e POSTGRES_USER=${{ env.POSTGRESQL_USERNAME }} \
+          -e POSTGRES_PASSWORD=${{ env.POSTGRESQL_PASSWORD }} \
+          -e RAILS_ENV=test \
+          -e RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }} \
+          bloomy-api-ci bash -c "bundle exec rspec --tag passing --require rails_helper"
+
+  rubocop-test:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Run Rubocop
+        run: docker run bloomy-api-ci bash -c "bundle exec rubocop"
+
+  brakeman:
+    name: Brakeman
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Run Brakeman
+        run: docker run bloomy-api-ci bash -c "bin/brakeman"

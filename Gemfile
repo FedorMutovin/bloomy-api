@@ -17,7 +17,11 @@ gem 'puma', '>= 5.0'
 gem 'ar_lazy_preload', '~> 2.1.0'
 gem 'graphql', '~> 2.3.17'
 
+# For using open struct after ruby 3.3.5
 gem 'ostruct', '~> 0.6.0'
+
+# Version control for specific db tables changes
+gem 'paper_trail', '~> 15.2.0'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"

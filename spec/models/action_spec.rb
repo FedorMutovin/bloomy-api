@@ -9,4 +9,5 @@ RSpec.describe Action do
   it { is_expected.to validate_presence_of(:title) }
 
   it_behaves_like 'relatable'
+  it_behaves_like 'reflectable'
 end

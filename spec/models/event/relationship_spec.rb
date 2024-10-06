@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe EventRelationship do
+RSpec.describe Event::Relationship do
   it { is_expected.to belong_to(:triggerable) }
   it { is_expected.to belong_to(:impactable) }
   it { is_expected.to validate_presence_of(:relation_type) }

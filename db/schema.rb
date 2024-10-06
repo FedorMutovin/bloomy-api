@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_06_102700) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_06_123644) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -37,6 +37,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_102700) do
     t.index ["user_id"], name: "index_decisions_on_user_id"
   end
 
+  create_table "event_reflections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "reflectable_type", null: false
+    t.uuid "reflectable_id", null: false
+    t.text "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reflectable_type", "reflectable_id"], name: "index_event_reflections_on_reflectable"
+  end
+
   create_table "event_relationships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "triggerable_type", null: false
     t.uuid "triggerable_id", null: false
@@ -47,6 +56,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_102700) do
     t.datetime "updated_at", null: false
     t.index ["impactable_type", "impactable_id"], name: "index_event_relationships_on_impactable"
     t.index ["triggerable_type", "triggerable_id"], name: "index_event_relationships_on_triggerable"
+  end
+
+  create_table "event_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "scheduable_type", null: false
+    t.uuid "scheduable_id", null: false
+    t.datetime "scheduled_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["scheduable_type", "scheduable_id"], name: "index_event_schedules_on_scheduable"
   end
 
   create_table "goals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -77,8 +95,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_102700) do
     t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "pending", null: false
     t.index ["goal_id"], name: "index_tasks_on_goal_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
+  end
+
+  create_table "thoughts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "description", null: false
+    t.uuid "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_thoughts_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -89,6 +116,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_102700) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "whodunnit"
+    t.datetime "created_at"
+    t.string "item_id", null: false
+    t.string "item_type", null: false
+    t.string "event", null: false
+    t.text "object"
+    t.text "object_changes"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+  end
+
   add_foreign_key "actions", "goals"
   add_foreign_key "actions", "tasks"
   add_foreign_key "actions", "users"
@@ -97,4 +135,5 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_102700) do
   add_foreign_key "hobbies", "users"
   add_foreign_key "tasks", "goals"
   add_foreign_key "tasks", "users"
+  add_foreign_key "thoughts", "users"
 end

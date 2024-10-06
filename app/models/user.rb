@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :actions, dependent: :destroy
   has_many :decisions, dependent: :destroy
   has_many :hobbies, dependent: :destroy
+  has_many :thoughts, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :password_digest, presence: true

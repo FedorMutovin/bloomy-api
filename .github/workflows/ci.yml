@@ -51,9 +51,10 @@ jobs:
           tags: bloomy-api-ci:latest
           cache-from: type=local,src=~/docker_cache
           cache-to: type=local,dest=~/docker_cache,mode=max
+          load: true
           build-args: |
-            RUBY_VERSION: '3.3.5'
-            PG_MAJOR: '16'
+            RUBY_VERSION=3.3.5
+            PG_MAJOR=16
 
       - name: Run tests in Docker
         run: |
@@ -106,6 +107,10 @@ jobs:
           tags: bloomy-api-ci:latest
           cache-from: type=local,src=~/docker_cache
           cache-to: type=local,dest=~/docker_cache,mode=max
+          load: true
+          build-args: |
+            RUBY_VERSION=3.3.5
+            PG_MAJOR=16
 
       - name: Run Rubocop
         run: |
@@ -141,6 +146,10 @@ jobs:
           tags: bloomy-api-ci:latest
           cache-from: type=local,src=~/docker_cache
           cache-to: type=local,dest=~/docker_cache,mode=max
+          load: true
+          build-args: |
+            RUBY_VERSION=3.3.5
+            PG_MAJOR=16
 
       - name: Run Brakeman
         run: |

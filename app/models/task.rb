@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-class Goal < ApplicationRecord
+class Task < ApplicationRecord
   include Relatable
   has_many :actions, dependent: :destroy
-  has_many :tasks, dependent: :destroy
   belongs_to :user
+  belongs_to :goal, optional: true
 
   validates :name, presence: true
 end

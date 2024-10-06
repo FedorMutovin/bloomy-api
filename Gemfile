@@ -34,6 +34,9 @@ group :development do
   # Graphiql
   gem 'graphiql-rails'
   gem 'sprockets-rails', require: 'sprockets/railtie'
+
+  # Database consistency check
+  gem 'database_consistency', '~> 1.7.25', require: false
 end
 
 group :development, :test do

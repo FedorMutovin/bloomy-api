@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_06_012155) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_06_102700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_012155) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "goal_id"
-    t.uuid "user_id"
+    t.uuid "user_id", null: false
     t.uuid "task_id"
     t.index ["goal_id"], name: "index_actions_on_goal_id"
     t.index ["task_id"], name: "index_actions_on_task_id"
@@ -33,15 +33,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_012155) do
     t.text "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "user_id"
+    t.uuid "user_id", null: false
     t.index ["user_id"], name: "index_decisions_on_user_id"
   end
 
   create_table "event_relationships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "triggerable_type"
-    t.uuid "triggerable_id"
-    t.string "impactable_type"
-    t.uuid "impactable_id"
+    t.string "triggerable_type", null: false
+    t.uuid "triggerable_id", null: false
+    t.string "impactable_type", null: false
+    t.uuid "impactable_id", null: false
     t.string "relation_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -64,7 +64,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_012155) do
     t.integer "skill_level", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "user_id"
+    t.uuid "user_id", null: false
     t.index ["user_id"], name: "index_hobbies_on_user_id"
   end
 

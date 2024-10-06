@@ -1,14 +1,13 @@
-name: Rails CI
-on:
-  push:
-    branches:
-      - '**'
-
 env:
   POSTGRESQL_USERNAME: postgres
   POSTGRESQL_PASSWORD: postgres
   POSTGRES_DB: postgres
-  BUNDLE_PATH: vendor/bundle
+
+name: Rails tests
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   rspec-test:
@@ -16,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:16
+        image: postgres:latest
         ports:
           - 5432:5432
         options: >-
@@ -27,185 +26,60 @@ jobs:
         env:
           POSTGRES_USER: ${{ env.POSTGRESQL_USERNAME }}
           POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
-
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
         with:
-          path: ~/docker_cache
-          key: ${{ runner.os }}-docker-${{ hashFiles('.dockerdev/Dockerfile', 'Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-
-      - name: Build Docker image (development)
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: .dockerdev/Dockerfile
-          target: development
-          tags: bloomy-api-ci:latest
-          cache-from: type=local,src=~/docker_cache
-          cache-to: type=local,dest=~/docker_cache,mode=max
-          load: true
-          build-args: |
-            RUBY_VERSION=3.3.5
-            PG_MAJOR=16
-
-      - name: Cache bundle
-        uses: actions/cache@v3
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-bundle-${{ hashFiles('Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bundle-
-
-      - name: Run tests in Docker
+          bundler-cache: true
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt-get -yqq install libpq-dev build-essential libcurl4-openssl-dev
+      - name: Setup Database
+        run: |
+          cp config/database.yml.github-actions config/database.yml
+          bundler exec rails db:create
+          bundle exec rake db:schema:load
         env:
+          RAILS_ENV: test
           POSTGRES_USER: ${{ env.POSTGRESQL_USERNAME }}
           POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
-          RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          BUNDLE_PATH: /app/vendor/bundle
-        run: |
-          docker run -d --name bloomy-api-container \
-            -e POSTGRES_USER \
-            -e POSTGRES_PASSWORD \
-            -e RAILS_ENV \
-            -e RAILS_MASTER_KEY \
-            -e BUNDLE_PATH \
-            --network host \
-            -w /app \
-            -v ${{ github.workspace }}:/app \
-            -v ${{ github.workspace }}/vendor/bundle:/app/vendor/bundle \
-            bloomy-api-ci:latest tail -f /dev/null
-
-          docker exec -w /app bloomy-api-container bash -c "
-            cp config/database.yml.github-actions config/database.yml &&
-            bundle config set path '${BUNDLE_PATH}' --local &&
-            bundle install &&
-            bundle exec rails db:create db:schema:load &&
-            COVERAGE=true bundle exec rspec --tag passing --require rails_helper
-          "
-
+      - name: Run tests
+        run: COVERAGE=true bundle exec rspec --tag passing --require rails_helper
+        env:
+          RAILS_ENV: test
+          POSTGRES_USER: ${{ env.POSTGRESQL_USERNAME }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRESQL_PASSWORD }}
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
       - name: Upload coverage results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@master
         if: always()
         with:
           name: coverage report
           path: coverage
-
   rubocop-test:
     name: Rubocop
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
         with:
-          path: ~/docker_cache
-          key: ${{ runner.os }}-docker-${{ hashFiles('.dockerdev/Dockerfile', 'Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-
-      - name: Build Docker image (development)
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: .dockerdev/Dockerfile
-          target: development
-          tags: bloomy-api-ci:latest
-          cache-from: type=local,src=~/docker_cache
-          cache-to: type=local,dest=~/docker_cache,mode=max
-          load: true
-          build-args: |
-            RUBY_VERSION=3.3.5
-            PG_MAJOR=16
-
-      - name: Cache bundle
-        uses: actions/cache@v3
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-bundle-${{ hashFiles('Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bundle-
-
-      - name: Run Rubocop
-        env:
-          BUNDLE_PATH: /app/vendor/bundle
-        run: |
-          docker run --rm \
-            -e BUNDLE_PATH \
-            -w /app \
-            -v ${{ github.workspace }}:/app \
-            -v ${{ github.workspace }}/vendor/bundle:/app/vendor/bundle \
-            bloomy-api-ci:latest bash -c "
-              bundle config set path '${BUNDLE_PATH}' --local &&
-              bundle install &&
-              bundle exec rubocop
-            "
-
+          bundler-cache: true
+      - name: Check Rubocop offenses
+        run: bundle exec rubocop
   brakeman:
-    name: Brakeman
+    name: runner / brakeman
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
+        uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          path: ~/docker_cache
-          key: ${{ runner.os }}-docker-${{ hashFiles('.dockerdev/Dockerfile', 'Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-
-      - name: Build Docker image (development)
-        uses: docker/build-push-action@v4
+          ruby-version: 3.0.0
+      - name: brakeman
+        uses: reviewdog/action-brakeman@v2
         with:
-          context: .
-          file: .dockerdev/Dockerfile
-          target: development
-          tags: bloomy-api-ci:latest
-          cache-from: type=local,src=~/docker_cache
-          cache-to: type=local,dest=~/docker_cache,mode=max
-          load: true
-          build-args: |
-            RUBY_VERSION=3.3.5
-            PG_MAJOR=16
-
-      - name: Cache bundle
-        uses: actions/cache@v3
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-bundle-${{ hashFiles('Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-bundle-
-
-      - name: Run Brakeman
-        env:
-          BUNDLE_PATH: /app/vendor/bundle
-        run: |
-          docker run --rm \
-            -e BUNDLE_PATH \
-            -w /app \
-            -v ${{ github.workspace }}:/app \
-            -v ${{ github.workspace }}/vendor/bundle:/app/vendor/bundle \
-            bloomy-api-ci:latest bash -c "
-              bundle config set path '${BUNDLE_PATH}' --local &&
-              bundle install &&
-              bin/brakeman
-            "
+          brakeman_version: 5.4.0
+          reporter: github-pr-review # Default is github-pr-check

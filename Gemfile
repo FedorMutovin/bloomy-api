@@ -15,7 +15,7 @@ gem 'puma', '>= 5.0'
 
 # API specification
 gem 'ar_lazy_preload', '~> 2.1.0'
-gem 'graphql', '~> 2.3.17'
+gem 'graphql', '~> 2.3.18'
 
 # For using open struct after ruby 3.3.5
 gem 'ostruct', '~> 0.6.0'

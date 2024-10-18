@@ -105,7 +105,7 @@ GEM
       activesupport (>= 6.1)
     graphiql-rails (1.10.1)
       railties
-    graphql (2.3.17)
+    graphql (2.3.18)
       base64
       fiber-storage
     i18n (1.14.6)
@@ -301,7 +301,7 @@ DEPENDENCIES
   debug
   factory_bot_rails
   graphiql-rails
-  graphql (~> 2.3.17)
+  graphql (~> 2.3.18)
   ostruct (~> 0.6.0)
   paper_trail (~> 15.2.0)
   pg (~> 1.1)

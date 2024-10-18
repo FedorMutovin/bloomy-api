@@ -20,6 +20,9 @@ gem 'graphql', '~> 2.3.17'
 # For using open struct after ruby 3.3.5
 gem 'ostruct', '~> 0.6.0'
 
+# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
+gem 'rack-cors'
+
 # Version control for specific db tables changes
 gem 'paper_trail', '~> 15.2.0'
 

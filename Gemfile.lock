@@ -85,7 +85,7 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
-    database_consistency (1.7.25)
+    database_consistency (1.7.26)
       activerecord (>= 3.2)
     date (3.3.4)
     debug (1.9.2)
@@ -286,7 +286,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   brakeman
   database_cleaner-active_record
-  database_consistency (~> 1.7.25)
+  database_consistency (~> 1.7.26)
   debug
   factory_bot_rails
   ostruct (~> 0.6.0)

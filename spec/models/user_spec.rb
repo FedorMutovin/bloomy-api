@@ -8,6 +8,7 @@ RSpec.describe User do
   it { is_expected.to have_many :decisions }
   it { is_expected.to have_many :hobbies }
   it { is_expected.to have_many :thoughts }
+  it { is_expected.to have_many :schedules }
   it { is_expected.to validate_presence_of :email }
 
   describe 'validate email uniqueness' do

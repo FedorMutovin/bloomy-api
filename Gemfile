@@ -13,9 +13,8 @@ gem 'pg', '~> 1.1'
 # Use the Puma web server [https://github.com/puma/puma]
 gem 'puma', '>= 5.0'
 
-# API specification
-gem 'ar_lazy_preload', '~> 2.1.0'
-gem 'graphql', '~> 2.3.17'
+# API serializer
+gem 'panko_serializer'
 
 # For using open struct after ruby 3.3.5
 gem 'ostruct', '~> 0.6.0'
@@ -38,10 +37,6 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 group :development do
-  # Graphiql
-  gem 'graphiql-rails'
-  gem 'sprockets-rails', require: 'sprockets/railtie'
-
   # Database consistency check
   gem 'database_consistency', '~> 1.7.25', require: false
 end
@@ -56,7 +51,6 @@ group :development, :test do
   gem 'rspec-rails', '~> 7.0.0'
   gem 'rubocop', require: false
   gem 'rubocop-factory_bot'
-  gem 'rubocop-graphql'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
   gem 'rubocop-require_tools'

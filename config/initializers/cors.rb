@@ -10,6 +10,8 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
     origins 'http://localhost:9000'
-    resource '/graphql/*', headers: :any, methods: :any, max_age: 600
+    resource '/api/v1/*',
+             methods: :any,
+             max_age: 600
   end
 end

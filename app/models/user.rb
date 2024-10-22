@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :decisions, dependent: :destroy
   has_many :hobbies, dependent: :destroy
   has_many :thoughts, dependent: :destroy
+  has_many :schedules, class_name: 'Event::Schedule', dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :password_digest, presence: true

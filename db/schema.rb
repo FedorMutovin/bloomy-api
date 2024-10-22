@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_16_171133) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_22_084818) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -64,7 +64,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_16_171133) do
     t.datetime "scheduled_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "user_id"
+    t.jsonb "details"
+    t.boolean "completed", default: false
     t.index ["scheduable_type", "scheduable_id"], name: "index_event_schedules_on_scheduable"
+    t.index ["user_id"], name: "index_event_schedules_on_user_id"
   end
 
   create_table "goals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -158,6 +162,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_16_171133) do
   add_foreign_key "actions", "tasks"
   add_foreign_key "actions", "users"
   add_foreign_key "decisions", "users"
+  add_foreign_key "event_schedules", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "hobbies", "users"
   add_foreign_key "repeats", "actions"

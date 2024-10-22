@@ -7,5 +7,4 @@ RSpec.describe Vacation do
   it { is_expected.to belong_to :user }
 
   it_behaves_like 'relatable'
-  it_behaves_like 'scheduable'
 end

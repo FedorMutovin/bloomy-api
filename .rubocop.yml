@@ -5,7 +5,6 @@ require:
   - rubocop-rspec
   - rubocop-factory_bot
   - rubocop-rspec_rails
-  - rubocop-graphql
 AllCops:
   NewCops: enable
   Exclude:
@@ -34,4 +33,10 @@ RSpec/MultipleMemoizedHelpers:
   Enabled: false
 
 RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
   Enabled: false

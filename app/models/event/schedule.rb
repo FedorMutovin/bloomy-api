@@ -7,6 +7,7 @@ module Event
     has_paper_trail
 
     belongs_to :scheduable, polymorphic: true
+    belongs_to :user
 
     validates :scheduled_at, presence: true
   end

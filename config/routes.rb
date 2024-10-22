@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :schedules, only: [:index]
       resources :goals, only: [:index]
+      resources :wishes, only: [:index]
       get 'users/current', to: 'users#current'
     end
   end

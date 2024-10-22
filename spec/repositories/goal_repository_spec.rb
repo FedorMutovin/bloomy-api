@@ -3,22 +3,24 @@
 require 'rails_helper'
 
 RSpec.describe GoalRepository do
-  describe '.all' do
-    let!(:goals) { create_pair(:goal) }
-
-    it 'returns all goals' do
-      expect(described_class.all).to match_array(goals)
-    end
-  end
-
   describe '.by_user_id(user_id:)' do
     let(:user) { create(:user) }
-    let!(:goal) { create(:goal, user:) }
+    let!(:active_goal) { create(:goal, user:, closed: false) }
+    let!(:closed_goal) { create(:goal, user:, closed: true) }
+    let!(:other_user_goal) { create(:goal, closed: false) }
 
-    before { create(:goal) }
+    it 'returns only active goals for the specific user' do
+      expect(described_class.by_user_id(user_id: user.id)).to contain_exactly(active_goal)
+    end
 
-    it 'returns goals only for specific user' do
-      expect(described_class.by_user_id(user_id: user.id)).to match_array(goal)
+    it 'does not return closed goals' do
+      result = described_class.by_user_id(user_id: user.id)
+      expect(result).not_to include(closed_goal)
+    end
+
+    it 'does not return goals of other users' do
+      result = described_class.by_user_id(user_id: user.id)
+      expect(result).not_to include(other_user_goal)
     end
   end
 end

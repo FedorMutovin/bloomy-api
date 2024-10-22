@@ -1,24 +1,28 @@
 # frozen_string_literal: true
 
-# spec/requests/api/v1/goals_controller_spec.rb
-
 require 'rails_helper'
 
 RSpec.describe Api::V1::GoalsController do
   describe 'GET /api/v1/goals' do
     let(:user) { create(:user) }
+    let!(:goal) { create(:goal, user:, status: 'pending') }
 
     context 'when user exists' do
-      before { create(:goal, user:) }
-
       it 'returns goals for the user' do
         get api_v1_goals_path(user_id: user.id)
 
-        body = response.parsed_body
+        expect(response).to have_http_status(:success)
+        json_response = response.parsed_body
 
-        expect(response).to have_http_status(:ok)
-        expect(body.size).to eq(1)
-        expect(body.first).to include('id', 'name', 'created_at')
+        expect(json_response).to be_an(Array)
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(goal.id)
+        expect(json_response.first['name']).to eq(goal.name)
+        expect(json_response.first['created_at']).to eq(goal.created_at.as_json)
+        expect(json_response.first['status']).to eq(goal.status)
+        expect(json_response.first['closed']).to eq(goal.closed)
+        expect(json_response.first['closed_at']).to eq(goal.closed_at)
+        expect(json_response.first['started_at']).to eq(goal.started_at)
       end
     end
 

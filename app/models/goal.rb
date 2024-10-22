@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class Goal < ApplicationRecord
+  ALLOWED_STATUSES = %w[in_progress pending completed declined].freeze
   include Relatable
   has_many :actions, dependent: :destroy
   has_many :tasks, dependent: :destroy
   belongs_to :user
 
-  validates :name, presence: true
+  validates :name, :status, presence: true
+  validates :status, inclusion: { in: ALLOWED_STATUSES }
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_22_201350) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_30_001607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -26,6 +26,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_22_201350) do
     t.index ["goal_id"], name: "index_actions_on_goal_id"
     t.index ["task_id"], name: "index_actions_on_task_id"
     t.index ["user_id"], name: "index_actions_on_user_id"
+  end
+
+  create_table "activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
   create_table "decisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -90,6 +98,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_22_201350) do
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
     t.index ["user_id"], name: "index_hobbies_on_user_id"
+  end
+
+  create_table "interests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_interests_on_user_id"
   end
 
   create_table "repeats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -172,10 +188,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_22_201350) do
   add_foreign_key "actions", "goals"
   add_foreign_key "actions", "tasks"
   add_foreign_key "actions", "users"
+  add_foreign_key "activities", "users"
   add_foreign_key "decisions", "users"
   add_foreign_key "event_schedules", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "hobbies", "users"
+  add_foreign_key "interests", "users"
   add_foreign_key "repeats", "actions"
   add_foreign_key "tasks", "goals"
   add_foreign_key "tasks", "users"

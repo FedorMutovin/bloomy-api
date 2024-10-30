@@ -13,8 +13,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :schedules, only: [:index]
-      resources :goals, only: [:index]
+      resources :goals, only: %i[index show]
       resources :wishes, only: [:index]
+      resources :tasks, only: [:index]
       get 'users/current', to: 'users#current'
     end
   end

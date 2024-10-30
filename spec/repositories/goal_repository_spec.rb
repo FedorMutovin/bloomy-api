@@ -23,4 +23,13 @@ RSpec.describe GoalRepository do
       expect(result).not_to include(other_user_goal)
     end
   end
+
+  describe '.by_id(id:)' do
+    let(:user) { create(:user) }
+    let!(:goal) { create(:goal, user:, closed: false) }
+
+    it 'returns only goal for the specified id' do
+      expect(described_class.by_id(id: goal.id)).to eq goal
+    end
+  end
 end

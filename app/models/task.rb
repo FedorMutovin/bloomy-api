@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Task < ApplicationRecord
+  has_paper_trail
+
   ALLOWED_STATUSES = %w[completed pending in_progress scheduled canceled].freeze
   include Relatable
   include Scheduable

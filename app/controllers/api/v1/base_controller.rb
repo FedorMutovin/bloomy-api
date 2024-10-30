@@ -11,8 +11,10 @@ module Api
         head :not_found
       end
 
-      def user
-        @user ||= UserRepository.by_id(id: params[:user_id])
+      def current_user
+        # @user ||= UserRepository.by_id(id: params[:user_id])
+        # TODO: add session
+        User.first
       end
     end
   end

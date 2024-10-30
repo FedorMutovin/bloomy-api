@@ -2,7 +2,7 @@
 
 class WishRepository
   def self.by_user_id(user_id:)
-    Wish.where(user_id:).to_a
+    Wish.where(user_id:).order(priority: :asc).to_a
   end
 
   def self.add(params:, user_id:)

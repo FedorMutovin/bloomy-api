@@ -18,11 +18,12 @@ RSpec.describe Api::V1::GoalsController do
         expect(json_response.size).to eq(1)
         expect(json_response.first['id']).to eq(goal.id)
         expect(json_response.first['name']).to eq(goal.name)
-        expect(json_response.first['created_at']).to eq(goal.created_at.strftime('%d-%m-%Y %H:%M'))
+        expect(json_response.first['created_at']).to eq(goal.created_at.iso8601(3))
         expect(json_response.first['status']).to eq(goal.status)
         expect(json_response.first['closed']).to eq(goal.closed)
         expect(json_response.first['closed_at']).to eq(goal.closed_at)
-        expect(json_response.first['started_at']).to eq(goal.started_at.strftime('%d-%m-%Y %H:%M'))
+        expect(json_response.first['started_at']).to eq(goal.started_at.iso8601(3))
+        expect(json_response.first['priority']).to eq(goal.priority)
         expect(json_response.first['tasks']).to be_nil
       end
     end
@@ -53,11 +54,12 @@ RSpec.describe Api::V1::GoalsController do
         expect(json_response).to be_an(Hash)
         expect(json_response['id']).to eq(goal.id)
         expect(json_response['name']).to eq(goal.name)
-        expect(json_response['created_at']).to eq(goal.created_at.strftime('%d-%m-%Y %H:%M'))
+        expect(json_response['created_at']).to eq(goal.created_at.iso8601(3))
         expect(json_response['status']).to eq(goal.status)
         expect(json_response['closed']).to eq(goal.closed)
         expect(json_response['closed_at']).to eq(goal.closed_at)
-        expect(json_response['started_at']).to eq(goal.started_at.strftime('%d-%m-%Y %H:%M'))
+        expect(json_response['started_at']).to eq(goal.started_at.iso8601(3))
+        expect(json_response['priority']).to eq(goal.priority)
         expect(json_response['tasks']).not_to be_nil
       end
     end

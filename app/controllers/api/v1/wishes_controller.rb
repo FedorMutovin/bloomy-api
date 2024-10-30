@@ -16,7 +16,7 @@ module Api
       private
 
       def wishes_params
-        params.require(:wishes).permit(:title, :description)
+        params.require(:wishes).permit(:title, :description, :priority)
       end
     end
   end

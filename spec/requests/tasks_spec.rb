@@ -20,7 +20,8 @@ RSpec.describe Api::V1::TasksController do
         expect(json_response.first['name']).to eq(task.name)
         expect(json_response.first['description']).to eq(task.description)
         expect(json_response.first['status']).to eq(task.status)
-        expect(json_response.first['created_at']).to eq(task.created_at.strftime('%d-%m-%Y %H:%M'))
+        expect(json_response.first['priority']).to eq(task.priority)
+        expect(json_response.first['created_at']).to eq(task.created_at.iso8601(3))
       end
     end
 

@@ -13,4 +13,13 @@ RSpec.describe WishRepository do
       expect(described_class.by_user_id(user_id: user.id)).to match_array(wish)
     end
   end
+
+  describe '.add' do
+    let(:user) { create(:user) }
+    let(:params) { { title: 'wish title', description: 'wish description' } }
+
+    it 'creates a wish' do
+      expect { described_class.add(params:, user_id: user.id) }.to change(Wish, :count).by(1)
+    end
+  end
 end

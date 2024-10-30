@@ -32,4 +32,25 @@ RSpec.describe Api::V1::WishesController do
     #   end
     # end
   end
+
+  describe 'POST /api/v1/wishes' do
+    let(:user) { create(:user) }
+    let(:params) { { wishes: { title: 'wish title', description: 'wish description' } } }
+
+    context 'with valid params' do
+      before { create(:user) }
+
+      it 'creates wish for the user' do
+        post api_v1_wishes_path(params)
+
+        expect(response).to have_http_status(:success)
+        json_response = response.parsed_body
+
+        expect(json_response).to be_an(Hash)
+        expect(json_response['id']).not_to be_nil
+        expect(json_response['title']).to eq(params[:wishes][:title])
+        expect(json_response['description']).to eq(params[:wishes][:description])
+      end
+    end
+  end
 end

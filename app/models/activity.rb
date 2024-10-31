@@ -3,5 +3,5 @@
 class Activity < ApplicationRecord
   include Relatable
   belongs_to :user
-  validates :name, presence: true
+  validates :name, :initiated_at, presence: true
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_31_173833) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -23,6 +23,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.uuid "goal_id"
     t.uuid "user_id", null: false
     t.uuid "task_id"
+    t.datetime "initiated_at", null: false
     t.index ["goal_id"], name: "index_actions_on_goal_id"
     t.index ["task_id"], name: "index_actions_on_task_id"
     t.index ["user_id"], name: "index_actions_on_user_id"
@@ -33,6 +34,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
@@ -42,6 +44,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_decisions_on_user_id"
   end
 
@@ -89,6 +92,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.datetime "closed_at"
     t.datetime "started_at"
     t.integer "priority", default: 0
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
@@ -98,6 +102,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
+    t.integer "engagement_level", default: 0
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_hobbies_on_user_id"
   end
 
@@ -106,16 +112,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "engagement_level", default: 0
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_interests_on_user_id"
-  end
-
-  create_table "repeats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "action_id", null: false
-    t.interval "duration"
-    t.text "details"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["action_id"], name: "index_repeats_on_action_id"
   end
 
   create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -129,6 +128,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.datetime "updated_at", null: false
     t.string "status", default: "pending", null: false
     t.integer "priority", default: 0
+    t.datetime "initiated_at", null: false
     t.index ["goal_id"], name: "index_tasks_on_goal_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
@@ -138,6 +138,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.uuid "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_thoughts_on_user_id"
   end
 
@@ -148,6 +149,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "vacation_id"
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_travels_on_user_id"
     t.index ["vacation_id"], name: "index_travels_on_vacation_id"
   end
@@ -164,6 +166,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.uuid "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_vacations_on_user_id"
   end
 
@@ -185,6 +188,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "priority", default: 0
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_wishes_on_user_id"
   end
 
@@ -197,7 +201,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_30_221042) do
   add_foreign_key "goals", "users"
   add_foreign_key "hobbies", "users"
   add_foreign_key "interests", "users"
-  add_foreign_key "repeats", "actions"
   add_foreign_key "tasks", "goals"
   add_foreign_key "tasks", "users"
   add_foreign_key "thoughts", "users"

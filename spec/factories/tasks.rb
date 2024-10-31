@@ -11,6 +11,7 @@ FactoryBot.define do
   factory :task do
     name { generate(:task_name) }
     description { generate(:task_description) }
+    initiated_at { Time.zone.now }
     user
   end
 end

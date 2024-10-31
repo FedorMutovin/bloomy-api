@@ -11,6 +11,7 @@ FactoryBot.define do
   factory :travel do
     destination { generate(:travel_destination) }
     description { generate(:travel_description) }
+    initiated_at { Time.zone.now }
     user
   end
 end

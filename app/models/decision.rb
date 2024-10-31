@@ -3,5 +3,5 @@
 class Decision < ApplicationRecord
   include Relatable
   belongs_to :user
-  validates :title, presence: true
+  validates :title, :initiated_at, presence: true
 end

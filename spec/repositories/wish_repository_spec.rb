@@ -26,10 +26,19 @@ RSpec.describe WishRepository do
 
   describe '.add' do
     let(:user) { create(:user) }
-    let(:params) { { title: 'wish title', description: 'wish description' } }
+    let(:params) { { title: 'wish title', description: 'wish description', initiated_at: Time.zone.now } }
 
     it 'creates a wish' do
       expect { described_class.add(params:, user_id: user.id) }.to change(Wish, :count).by(1)
+    end
+  end
+
+  describe '.by_id(id:)' do
+    let(:user) { create(:user) }
+    let!(:wish) { create(:wish, user:) }
+
+    it 'returns only wish for the specified id' do
+      expect(described_class.by_id(id: wish.id)).to eq wish
     end
   end
 end

@@ -8,5 +8,6 @@ FactoryBot.define do
     name { generate(:goal_name) }
     user
     started_at { Time.zone.now }
+    initiated_at { Time.zone.now }
   end
 end

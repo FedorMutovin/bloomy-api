@@ -6,5 +6,5 @@ class Travel < ApplicationRecord
   belongs_to :user
   belongs_to :vacation, optional: true
 
-  validates :destination, presence: true
+  validates :destination, :initiated_at, presence: true
 end

@@ -16,7 +16,7 @@ module Api
       private
 
       def goal
-        @goal = GoalRepository.by_id(id: params[:id])
+        @goal ||= GoalRepository.by_id(id: params[:id])
       end
     end
   end

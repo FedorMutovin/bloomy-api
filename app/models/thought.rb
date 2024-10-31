@@ -4,5 +4,5 @@ class Thought < ApplicationRecord
   include Relatable
   belongs_to :user
 
-  validates :description, presence: true
+  validates :description, :initiated_at, presence: true
 end

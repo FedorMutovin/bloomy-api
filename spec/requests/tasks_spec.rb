@@ -21,18 +21,8 @@ RSpec.describe Api::V1::TasksController do
         expect(json_response.first['description']).to eq(task.description)
         expect(json_response.first['status']).to eq(task.status)
         expect(json_response.first['priority']).to eq(task.priority)
-        expect(json_response.first['created_at']).to eq(task.created_at.iso8601(3))
+        expect(json_response.first['initiated_at']).to eq(task.initiated_at.iso8601(3))
       end
     end
-
-    # context 'when user does not exist' do
-    #   let(:user_id) { '231' }
-    #
-    #   it 'returns not found' do
-    #     get api_v1_tasks_path(user_id:)
-    #
-    #     expect(response).to have_http_status(:not_found)
-    #   end
-    # end
   end
 end

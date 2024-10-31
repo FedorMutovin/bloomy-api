@@ -3,9 +3,14 @@
 module Api
   module V1
     class WishesController < BaseController
+      before_action :wish, only: %i[show]
       def index
-        schedules = WishRepository.by_user_id(user_id: current_user.id)
-        render json: Panko::ArraySerializer.new(schedules, each_serializer: WishSerializer).to_json
+        wishes = WishRepository.by_user_id(user_id: current_user.id)
+        render json: Panko::ArraySerializer.new(wishes, each_serializer: WishSerializer).to_json
+      end
+
+      def show
+        render json: WishSerializer.new.serialize_to_json(wish)
       end
 
       def create
@@ -16,7 +21,11 @@ module Api
       private
 
       def wishes_params
-        params.require(:wishes).permit(:title, :description, :priority)
+        params.require(:wishes).permit(:title, :description, :priority, :initiated_at)
+      end
+
+      def wish
+        @wish ||= WishRepository.by_id(id: params[:id])
       end
     end
   end

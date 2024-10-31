@@ -8,4 +8,8 @@ class WishRepository
   def self.add(params:, user_id:)
     Wish.create!(params.merge(user_id:))
   end
+
+  def self.by_id(id:)
+    Wish.find(id)
+  end
 end

@@ -11,6 +11,7 @@ FactoryBot.define do
   factory :wish do
     title { generate(:wish_title) }
     description { generate(:wish_description) }
+    initiated_at { Time.zone.now }
     user
   end
 end

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class TaskSerializer < Panko::Serializer
-  attributes :id, :name, :description, :status, :created_at, :priority
+  attributes :id, :name, :description, :status, :priority, :initiated_at
 end

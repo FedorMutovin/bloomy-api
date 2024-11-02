@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_01_143102) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_01_140142) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -46,15 +46,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_143102) do
     t.uuid "user_id", null: false
     t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_decisions_on_user_id"
-  end
-
-  create_table "event_engagements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "engagementable_type", null: false
-    t.uuid "engagementable_id", null: false
-    t.integer "level", default: 5, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["engagementable_type", "engagementable_id"], name: "index_event_engagements_on_engagementable"
   end
 
   create_table "event_reflections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -125,15 +116,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_143102) do
     t.index ["user_id"], name: "index_interests_on_user_id"
   end
 
-  create_table "skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "skillable_type"
-    t.uuid "skillable_id"
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["skillable_type", "skillable_id"], name: "index_skills_on_skillable"
-  end
-
   create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.uuid "goal_id"
@@ -170,15 +152,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_143102) do
     t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_travels_on_user_id"
     t.index ["vacation_id"], name: "index_travels_on_vacation_id"
-  end
-
-  create_table "user_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "user_id", null: false
-    t.uuid "skill_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["skill_id"], name: "index_user_skills_on_skill_id"
-    t.index ["user_id"], name: "index_user_skills_on_user_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -232,8 +205,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_143102) do
   add_foreign_key "tasks", "users"
   add_foreign_key "thoughts", "users"
   add_foreign_key "travels", "users"
-  add_foreign_key "user_skills", "skills"
-  add_foreign_key "user_skills", "users"
   add_foreign_key "vacations", "users"
   add_foreign_key "wishes", "users"
 end

@@ -14,14 +14,14 @@ module Api
       end
 
       def create
-        wish = WishRepository.add(params: wishes_params, user_id: current_user.id)
+        wish = WishRepository.add(params: wishes_params.merge(user_id: current_user.id))
         render json: WishSerializer.new.serialize_to_json(wish)
       end
 
       private
 
       def wishes_params
-        params.require(:wishes).permit(:title, :description, :priority, :initiated_at)
+        params.require(:wish).permit(:title, :description, :priority, :initiated_at)
       end
 
       def wish

@@ -7,6 +7,7 @@ RSpec.describe TaskRepository do
     let(:user) { create(:user) }
     let!(:active_task) { create(:task, user:, priority: 0) }
     let!(:closed_task) { create(:task, user:, closed_at: Time.zone.now, priority: 1) }
+    let!(:postponed_task) { create(:task, user:, postponed_at: Time.zone.now, priority: 1) }
     let!(:other_user_task) { create(:task, priority: 2) }
 
     it 'returns only active tasks for the specific user' do
@@ -16,6 +17,11 @@ RSpec.describe TaskRepository do
     it 'does not return closed tasks' do
       result = described_class.by_user_id(user_id: user.id)
       expect(result).not_to include(closed_task)
+    end
+
+    it 'does not return postponed tasks' do
+      result = described_class.by_user_id(user_id: user.id)
+      expect(result).not_to include(postponed_task)
     end
 
     it 'does not return tasks of other users' do

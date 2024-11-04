@@ -13,7 +13,17 @@ module Api
         render json: GoalSerializer.new.serialize_to_json(goal)
       end
 
+      def create
+        goal = Goals::Create.new(goals_params, user_id: current_user.id).call
+        render json: GoalSerializer.new(except: [:tasks]).serialize(goal)
+      end
+
       private
+
+      def goals_params
+        params.require(:goal).permit(:name, :description, :priority, :initiated_at,
+                                     tasks_attributes: %i[name description priority initiated_at])
+      end
 
       def goal
         @goal ||= GoalRepository.by_id(id: params[:id])

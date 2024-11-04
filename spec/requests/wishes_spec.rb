@@ -58,7 +58,7 @@ RSpec.describe Api::V1::WishesController do
     let(:user) { create(:user) }
     let(:initiated_at) { '2024-10-31T17:50:21.000Z' }
     let(:params) do
-      { wishes: { title: 'wish title', description: 'wish description', priority: 1, initiated_at: } }
+      { wish: { title: 'wish title', description: 'wish description', priority: 1, initiated_at: } }
     end
 
     context 'with valid params' do
@@ -72,10 +72,10 @@ RSpec.describe Api::V1::WishesController do
 
         expect(json_response).to be_an(Hash)
         expect(json_response['id']).not_to be_nil
-        expect(json_response['title']).to eq(params[:wishes][:title])
-        expect(json_response['description']).to eq(params[:wishes][:description])
-        expect(json_response['priority']).to eq(params[:wishes][:priority])
-        expect(json_response['initiated_at']).to eq(params[:wishes][:initiated_at])
+        expect(json_response['title']).to eq(params[:wish][:title])
+        expect(json_response['description']).to eq(params[:wish][:description])
+        expect(json_response['priority']).to eq(params[:wish][:priority])
+        expect(json_response['initiated_at']).to eq(params[:wish][:initiated_at])
       end
     end
   end

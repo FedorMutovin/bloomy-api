@@ -5,8 +5,8 @@ class WishRepository
     Wish.where(user_id:).order(priority: :asc).to_a
   end
 
-  def self.add(params:, user_id:)
-    Wish.create!(params.merge(user_id:))
+  def self.add(params:)
+    Wish.create!(params)
   end
 
   def self.by_id(id:)

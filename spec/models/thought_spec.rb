@@ -8,4 +8,5 @@ RSpec.describe Thought do
   it { is_expected.to validate_presence_of(:initiated_at) }
 
   it_behaves_like 'relatable'
+  it_behaves_like 'reflectable'
 end

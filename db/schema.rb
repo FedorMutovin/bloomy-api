@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_01_140142) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_02_230532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -92,6 +92,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_140142) do
     t.datetime "started_at"
     t.integer "priority", default: 0
     t.datetime "initiated_at", null: false
+    t.datetime "postponed_at"
+    t.datetime "postponed_until"
+    t.text "description"
     t.index ["user_id"], name: "index_goals_on_user_id"
   end
 
@@ -121,14 +124,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_140142) do
     t.uuid "goal_id"
     t.string "name", null: false
     t.text "description"
-    t.boolean "completed", default: false, null: false
-    t.datetime "completed_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status", default: "pending", null: false
     t.integer "priority", default: 0
     t.datetime "initiated_at", null: false
     t.datetime "closed_at"
+    t.datetime "postponed_at"
+    t.datetime "postponed_until"
     t.index ["goal_id"], name: "index_tasks_on_goal_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
@@ -189,6 +192,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_01_140142) do
     t.datetime "updated_at", null: false
     t.integer "priority", default: 0
     t.datetime "initiated_at", null: false
+    t.datetime "activated_at"
     t.index ["user_id"], name: "index_wishes_on_user_id"
   end
 

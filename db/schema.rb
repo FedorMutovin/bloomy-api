@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_02_230532) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_04_214106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "actions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "title", null: false
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -24,6 +23,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_02_230532) do
     t.uuid "user_id", null: false
     t.uuid "task_id"
     t.datetime "initiated_at", null: false
+    t.string "name", null: false
     t.index ["goal_id"], name: "index_actions_on_goal_id"
     t.index ["task_id"], name: "index_actions_on_task_id"
     t.index ["user_id"], name: "index_actions_on_user_id"
@@ -39,12 +39,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_02_230532) do
   end
 
   create_table "decisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "title", null: false
     t.text "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
     t.datetime "initiated_at", null: false
+    t.string "name", null: false
     t.index ["user_id"], name: "index_decisions_on_user_id"
   end
 
@@ -186,13 +186,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_02_230532) do
 
   create_table "wishes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
-    t.string "title", null: false
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "priority", default: 0
     t.datetime "initiated_at", null: false
     t.datetime "activated_at"
+    t.string "name", null: false
     t.index ["user_id"], name: "index_wishes_on_user_id"
   end
 

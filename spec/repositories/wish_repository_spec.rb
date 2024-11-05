@@ -27,7 +27,7 @@ RSpec.describe WishRepository do
   describe '.add' do
     let(:user) { create(:user) }
     let(:params) do
-      { title: 'wish title', description: 'wish description', initiated_at: Time.zone.now, user_id: user.id }
+      { name: 'wish name', description: 'wish description', initiated_at: Time.zone.now, user_id: user.id }
     end
 
     it 'creates a wish' do

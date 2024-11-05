@@ -7,5 +7,5 @@ class Action < ApplicationRecord
   belongs_to :goal, optional: true
   belongs_to :user
 
-  validates :title, :initiated_at, presence: true
+  validates :name, :initiated_at, presence: true
 end

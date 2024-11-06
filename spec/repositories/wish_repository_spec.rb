@@ -6,10 +6,9 @@ RSpec.describe WishRepository do
   describe '.by_user_id(user_id:)' do
     let(:user) { create(:user) }
     let!(:wish) { create(:wish, user:, priority: 0) }
+    let!(:activated_wish) { create(:wish, user:, priority: 0, activated_at: Time.zone.now) }
 
-    before { create(:wish) }
-
-    it 'returns wishes only for specific user' do
+    it 'returns not activated wishes only for specific user' do
       expect(described_class.by_user_id(user_id: user.id)).to match_array(wish)
     end
 

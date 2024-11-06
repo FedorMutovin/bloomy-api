@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :event_schedule, class: 'Event::Schedule' do
+  factory :event_schedule, class: 'Events::Schedule' do
     scheduled_at { 10.days.from_now }
     completed { false }
     user

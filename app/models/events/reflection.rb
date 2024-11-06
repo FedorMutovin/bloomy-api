@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Event
+module Events
   class Reflection < ApplicationRecord
     self.table_name = :event_reflections
 

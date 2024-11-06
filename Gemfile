@@ -7,6 +7,9 @@ gem 'rails', '~> 7.2.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
 
+# Postgresql views(materialized)
+gem 'scenic'
+
 # TODO: enable strong migrations after release
 # gem 'strong_migrations', '~> 2.0.0'
 

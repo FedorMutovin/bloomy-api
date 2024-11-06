@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_04_220953) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_06_191235) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -62,7 +62,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_04_220953) do
     t.uuid "triggerable_id", null: false
     t.string "impactable_type", null: false
     t.uuid "impactable_id", null: false
-    t.string "relation_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["impactable_type", "impactable_id"], name: "index_event_relationships_on_impactable"
@@ -117,6 +116,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_04_220953) do
     t.integer "engagement_level", default: 0
     t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_interests_on_user_id"
+  end
+
+  create_table "movies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "name", null: false
+    t.string "rating"
+    t.datetime "completed_at"
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_movies_on_user_id"
   end
 
   create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -206,10 +216,83 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_04_220953) do
   add_foreign_key "goals", "users"
   add_foreign_key "hobbies", "users"
   add_foreign_key "interests", "users"
+  add_foreign_key "movies", "users"
   add_foreign_key "tasks", "goals"
   add_foreign_key "tasks", "users"
   add_foreign_key "thoughts", "users"
   add_foreign_key "travels", "users"
   add_foreign_key "vacations", "users"
   add_foreign_key "wishes", "users"
+
+  create_view "events", sql_definition: <<-SQL
+      SELECT tasks.id,
+      'Task'::text AS event_type,
+      tasks.name,
+      tasks.initiated_at,
+      tasks.user_id
+     FROM tasks
+  UNION ALL
+   SELECT wishes.id,
+      'Wish'::text AS event_type,
+      wishes.name,
+      wishes.initiated_at,
+      wishes.user_id
+     FROM wishes
+  UNION ALL
+   SELECT thoughts.id,
+      'Thought'::text AS event_type,
+      thoughts.description AS name,
+      thoughts.initiated_at,
+      thoughts.user_id
+     FROM thoughts
+  UNION ALL
+   SELECT actions.id,
+      'Action'::text AS event_type,
+      actions.name,
+      actions.initiated_at,
+      actions.user_id
+     FROM actions
+  UNION ALL
+   SELECT goals.id,
+      'Goal'::text AS event_type,
+      goals.name,
+      goals.initiated_at,
+      goals.user_id
+     FROM goals
+  UNION ALL
+   SELECT decisions.id,
+      'Decision'::text AS event_type,
+      decisions.name,
+      decisions.initiated_at,
+      decisions.user_id
+     FROM decisions
+  UNION ALL
+   SELECT activities.id,
+      'Activity'::text AS event_type,
+      activities.name,
+      activities.initiated_at,
+      activities.user_id
+     FROM activities
+  UNION ALL
+   SELECT hobbies.id,
+      'Hobby'::text AS event_type,
+      hobbies.name,
+      hobbies.initiated_at,
+      hobbies.user_id
+     FROM hobbies
+  UNION ALL
+   SELECT travels.id,
+      'Travel'::text AS event_type,
+      travels.destination AS name,
+      travels.initiated_at,
+      travels.user_id
+     FROM travels
+  UNION ALL
+   SELECT interests.id,
+      'Interest'::text AS event_type,
+      interests.name,
+      interests.initiated_at,
+      interests.user_id
+     FROM interests;
+  SQL
 end

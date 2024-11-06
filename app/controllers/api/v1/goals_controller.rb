@@ -22,7 +22,8 @@ module Api
 
       def goals_params
         params.require(:goal).permit(:name, :description, :priority, :initiated_at,
-                                     tasks_attributes: %i[name description priority initiated_at])
+                                     tasks_attributes: %i[name description priority initiated_at],
+                                     triggers_attributes: %i[id event_type name])
       end
 
       def goal

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Event
+module Events
   class Schedule < ApplicationRecord
     self.table_name = :event_schedules
 

@@ -18,7 +18,7 @@ RSpec.describe Api::V1::SchedulesController do
     end
 
     it 'returns a list of schedules for a user' do
-      get '/api/v1/schedules', params: { user_id: user.id }
+      get api_v1_schedules_path(user_id: user.id)
 
       expect(response).to have_http_status(:success)
       json_response = response.parsed_body
@@ -31,15 +31,5 @@ RSpec.describe Api::V1::SchedulesController do
       expect(json_response.first['completed']).to be(false)
       expect(json_response.first['details']['destination']).to eq(travel.destination)
     end
-
-    # context 'when user does not exist' do
-    #   let(:user_id) { '231' }
-    #
-    #   it 'returns not found' do
-    #     get api_v1_schedules_path(user_id:)
-    #
-    #     expect(response).to have_http_status(:not_found)
-    #   end
-    # end
   end
 end

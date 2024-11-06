@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Event::ScheduleRepository do
+RSpec.describe Events::ScheduleRepository do
   describe '.by_user_id(user_id:)' do
     let(:user) { create(:user) }
     let!(:incomplete_schedule) { create(:event_schedule, :travel, user:, completed: false) }

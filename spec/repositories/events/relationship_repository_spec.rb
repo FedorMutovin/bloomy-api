@@ -24,7 +24,8 @@ RSpec.describe Events::RelationshipRepository do
     let(:user) { create(:user) }
     let(:trigger) { create(:thought, user:) }
     let(:target) { create(:task, user:) }
-    let!(:event_relationship) { create(:event_relationship, triggerable: trigger, impactable: target) }
+
+    before { create(:event_relationship, triggerable: trigger, impactable: target) }
 
     it 'finds trigger by trigger_id' do
       expect(described_class.find_trigger_by_id(trigger_id: trigger.id)).to eq(trigger)

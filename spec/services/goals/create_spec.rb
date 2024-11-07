@@ -20,12 +20,13 @@ RSpec.describe Goals::Create do
   end
 
   describe '#call' do
+    let(:goal) { build(:goal) }
+
     before do
-      allow(GoalRepository).to receive(:add)
-      allow(Events::RelationshipRepository).to receive(:add) # Добавляем здесь, чтобы метод стал шпионом
+      allow(GoalRepository).to receive(:add).and_return(goal)
     end
 
-    it 'adds user_id to params' do
+    it 'adds user_id to params and creates the goal' do
       expected_params = params.deep_dup
       expected_params[:user_id] = user_id
       expected_params[:tasks_attributes].each { |task| task.merge!(user_id:) }
@@ -45,7 +46,7 @@ RSpec.describe Goals::Create do
         }
       end
 
-      it 'does not raise error and adds user_id to params' do
+      it 'does not raise an error and adds user_id to params' do
         expected_params = params.deep_dup
         expected_params[:user_id] = user_id
 
@@ -57,32 +58,40 @@ RSpec.describe Goals::Create do
 
     context 'when triggers_attributes is present' do
       let(:trigger_data) { { 'id' => '51fa64d8-3531-466f-a60f-af64857422d7', 'event_type' => 'Goal' } }
-      let(:goal) { double('goal', id: 'goal-id', class: double(name: 'Goal')) }
       let(:params) do
         super().merge(triggers_attributes: [trigger_data])
       end
 
+      let(:relationships_create_instance) { instance_double(Events::Relationships::Create) }
+
       before do
-        allow(GoalRepository).to receive(:add).and_return(goal)
+        allow(Events::Relationships::Create).to receive(:new).and_return(relationships_create_instance)
+        allow(relationships_create_instance).to receive(:call)
       end
 
-      it 'links the trigger event to the created goal' do
+      it 'calls Events::Relationships::Create with correct parameters' do
         service.call
 
-        expect(Events::RelationshipRepository).to have_received(:add).with(
+        expect(Events::Relationships::Create).to have_received(:new).with(
           trigger_id: trigger_data['id'],
           trigger_type: trigger_data['event_type'],
           target_id: goal.id,
           target_type: 'Goal'
         )
+
+        expect(relationships_create_instance).to have_received(:call)
       end
     end
 
     context 'when triggers_attributes is not present' do
-      it 'does not call add on Events::RelationshipRepository' do
+      before do
+        allow(Events::Relationships::Create).to receive(:new)
+      end
+
+      it 'does not call Events::Relationships::Create' do
         service.call
 
-        expect(Events::RelationshipRepository).not_to have_received(:add)
+        expect(Events::Relationships::Create).not_to have_received(:new)
       end
     end
   end

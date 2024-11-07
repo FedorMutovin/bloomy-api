@@ -21,7 +21,7 @@ RSpec.describe EventRepository do
       expect(result).not_to include(other_user_goal)
     end
 
-    context 'ordered by initiated_at asc' do
+    context 'with ordering by initiated_at asc' do
       let!(:goal) { create(:goal, user:, initiated_at: 1.day.from_now) }
       let!(:task) { create(:task, user:, initiated_at: 2.days.from_now) }
       let!(:travel) { create(:travel, user:, initiated_at: 3.days.from_now) }

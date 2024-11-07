@@ -28,12 +28,12 @@ module Goals
 
     def link_event_relationship
       trigger_data = @triggers_params.first
-      Events::RelationshipRepository.add(
+      Events::Relationships::Create.new(
         trigger_id: trigger_data['id'],
         trigger_type: trigger_data['event_type'],
         target_id: @goal.id,
         target_type: @goal.class.name
-      )
+      ).call
     end
 
     def prepare_params

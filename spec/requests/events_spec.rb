@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::EventsController do
-  xdescribe 'GET /api/v1/events' do
+  describe 'GET /api/v1/events' do
     let(:user) { create(:user) }
     let!(:goal) { create(:goal, user:, initiated_at: 1.day.from_now) }
     let!(:task) { create(:task, user:, initiated_at: 2.days.from_now) }

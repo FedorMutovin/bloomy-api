@@ -4,6 +4,8 @@ class Goal < ApplicationRecord
   ALLOWED_STATUSES = %w[in_progress pending completed postponed declined].freeze
   include Relatable
   include Reflectable
+  include EngagementChangable
+
   has_many :actions, dependent: :destroy
   has_many :tasks, dependent: :destroy
   belongs_to :user

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_07_204611) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_07_210808) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -55,6 +55,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_07_204611) do
     t.text "reason", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "initiated_at", null: false
     t.index ["target_type", "target_id"], name: "index_event_engagement_changes_on_target"
   end
 

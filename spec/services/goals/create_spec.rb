@@ -3,9 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe Goals::Create do
-  subject(:service) { described_class.new(params, user_id:) }
+  subject(:service) { described_class.new(params:, user_id:, trigger_params:) }
 
   let(:user_id) { '1' }
+  let(:trigger_params) { {} }
   let(:params) do
     {
       name: 'Learn Ruby',
@@ -56,12 +57,8 @@ RSpec.describe Goals::Create do
       end
     end
 
-    context 'when triggers_attributes is present' do
-      let(:trigger_data) { { 'id' => '51fa64d8-3531-466f-a60f-af64857422d7', 'event_type' => 'Goal' } }
-      let(:params) do
-        super().merge(triggers_attributes: [trigger_data])
-      end
-
+    context 'when trigger_params is present' do
+      let(:trigger_params) { { 'id' => '51fa64d8-3531-466f-a60f-af64857422d7', 'event_type' => 'Goal' } }
       let(:relationships_create_instance) { instance_double(Events::Relationships::Create) }
 
       before do
@@ -73,8 +70,8 @@ RSpec.describe Goals::Create do
         service.call
 
         expect(Events::Relationships::Create).to have_received(:new).with(
-          trigger_id: trigger_data['id'],
-          trigger_type: trigger_data['event_type'],
+          trigger_id: trigger_params['id'],
+          trigger_type: trigger_params['event_type'],
           target_id: goal.id,
           target_type: 'Goal'
         )
@@ -83,7 +80,9 @@ RSpec.describe Goals::Create do
       end
     end
 
-    context 'when triggers_attributes is not present' do
+    context 'when trigger_params is empty' do
+      let(:trigger_params) { {} }
+
       before do
         allow(Events::Relationships::Create).to receive(:new)
       end

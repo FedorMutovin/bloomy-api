@@ -14,20 +14,23 @@ module Api
       end
 
       def create
-        goal = Goals::Create.new(goals_params, user_id: current_user.id).call
+        goal = Goals::Create.new(params: goals_params, user_id: current_user.id, trigger_params:).call
         render json: GoalSerializer.new(except: [:tasks]).serialize(goal)
       end
 
       private
 
-      def goals_params
-        params.require(:goal).permit(:name, :description, :priority, :initiated_at,
-                                     tasks_attributes: %i[name description priority initiated_at],
-                                     triggers_attributes: %i[id event_type name])
-      end
-
       def goal
         @goal ||= GoalRepository.by_id(id: params[:id])
+      end
+
+      def goals_params
+        params.require(:goal).permit(:name, :description, :priority, :initiated_at,
+                                     tasks_attributes: %i[name description priority initiated_at])
+      end
+
+      def trigger_params
+        params.require(:goal).fetch(:trigger, {}).permit(:id, :event_type, :name)
       end
     end
   end

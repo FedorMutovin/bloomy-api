@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_07_210808) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_09_111155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -90,6 +90,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_07_210808) do
     t.boolean "completed", default: false
     t.index ["scheduable_type", "scheduable_id"], name: "index_event_schedules_on_scheduable"
     t.index ["user_id"], name: "index_event_schedules_on_user_id"
+  end
+
+  create_table "everyday_quotes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.text "description", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_everyday_quotes_on_user_id"
   end
 
   create_table "goals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -224,6 +232,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_07_210808) do
   add_foreign_key "activities", "users"
   add_foreign_key "decisions", "users"
   add_foreign_key "event_schedules", "users"
+  add_foreign_key "everyday_quotes", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "hobbies", "users"
   add_foreign_key "interests", "users"

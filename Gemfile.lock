@@ -180,7 +180,7 @@ GEM
     oj (3.16.6)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
-    ostruct (0.6.0)
+    ostruct (0.6.1)
     panko_serializer (0.8.2)
       activesupport
       oj (> 3.11.0, < 4.0.0)
@@ -328,7 +328,7 @@ DEPENDENCIES
   dry-initializer
   dry-validation (~> 1.10)
   factory_bot_rails
-  ostruct (~> 0.6.0)
+  ostruct (~> 0.6.1)
   panko_serializer
   paper_trail (~> 15.2.0)
   pg (~> 1.1)

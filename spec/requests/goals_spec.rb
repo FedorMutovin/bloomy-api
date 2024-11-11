@@ -18,10 +18,10 @@ RSpec.describe Api::V1::GoalsController do
         expect(json_response.size).to eq(1)
         expect(json_response.first['id']).to eq(goal.id)
         expect(json_response.first['name']).to eq(goal.name)
-        expect(json_response.first['initiated_at']).to eq(goal.initiated_at.iso8601(3))
+        expect(json_response.first['initiated_at']).to eq(goal.initiated_at.iso8601)
         expect(json_response.first['status']).to eq(goal.status)
         expect(json_response.first['closed_at']).to eq(goal.closed_at)
-        expect(json_response.first['started_at']).to eq(goal.started_at.iso8601(3))
+        expect(json_response.first['started_at']).to eq(goal.started_at.iso8601)
         expect(json_response.first['priority']).to eq(goal.priority)
         expect(json_response.first['tasks']).to be_nil
       end
@@ -43,10 +43,10 @@ RSpec.describe Api::V1::GoalsController do
         expect(json_response).to be_an(Hash)
         expect(json_response['id']).to eq(goal.id)
         expect(json_response['name']).to eq(goal.name)
-        expect(json_response['initiated_at']).to eq(goal.initiated_at.iso8601(3))
+        expect(json_response['initiated_at']).to eq(goal.initiated_at.iso8601)
         expect(json_response['status']).to eq(goal.status)
         expect(json_response['closed_at']).to eq(goal.closed_at)
-        expect(json_response['started_at']).to eq(goal.started_at.iso8601(3))
+        expect(json_response['started_at']).to eq(goal.started_at.iso8601)
         expect(json_response['priority']).to eq(goal.priority)
         expect(json_response['tasks']).not_to be_nil
       end
@@ -64,43 +64,60 @@ RSpec.describe Api::V1::GoalsController do
   end
 
   describe 'POST /api/v1/goals' do
-    let(:user) { create(:user) }
-    let(:initiated_at) { '2024-10-31T17:50:21.000Z' }
-    let(:params) do
+    let(:initiated_at) { '2024-11-11T17:03:32Z' }
+    let(:started_at) { '2024-11-11T17:03:32Z' }
+    let!(:params) do
       {
-        goal:
-          {
-            name: ' goal name',
-            description: 'goal description',
-            priority: 1,
-            initiated_at:,
-            tasks_attributes: [
-              {
-                name: 'task name',
-                description: 'task description',
-                initiated_at: Time.current
-              }
-            ]
+        goal: {
+          name: 'Goal name',
+          description: 'Goal description',
+          priority: 1,
+          started_at:,
+          status: Status::IN_PROGRESS,
+          initiated_at:,
+          trigger: {
+            id: 'trigger_id',
+            event_type: 'some_event_type',
+            name: 'Trigger name'
           }
+        }
       }
     end
 
-    context 'with valid params' do
-      before { create(:user) }
+    let(:goal) do
+      build_stubbed(
+        :goal,
+        name: params[:goal][:name],
+        description: params[:goal][:description],
+        priority: params[:goal][:priority],
+        initiated_at: params[:goal][:initiated_at],
+        started_at: params[:goal][:started_at],
+        status: params[:goal][:status]
+      )
+    end
 
-      it 'creates goal for the user' do
-        post api_v1_goals_path(params)
+    let(:stubbed_create_service) { instance_double(Goals::Create) }
+
+    before do
+      create(:user)
+      allow(Goals::Create).to receive(:new).and_return(stubbed_create_service)
+      allow(stubbed_create_service).to receive(:call).and_return(goal)
+    end
+
+    context 'with valid params' do
+      it 'creates a goal for the user' do
+        post(api_v1_goals_path, params:)
 
         expect(response).to have_http_status(:success)
         json_response = response.parsed_body
 
-        expect(json_response).to be_an(Hash)
-        expect(json_response['id']).not_to be_nil
+        expect(json_response).to be_a(Hash)
         expect(json_response['name']).to eq(params[:goal][:name])
         expect(json_response['description']).to eq(params[:goal][:description])
         expect(json_response['priority']).to eq(params[:goal][:priority])
         expect(json_response['initiated_at']).to eq(params[:goal][:initiated_at])
-        expect(json_response['tasks']).to be_nil
+        expect(json_response['started_at']).to eq(params[:goal][:started_at])
+        expect(json_response['status']).to eq(params[:goal][:status])
       end
     end
   end

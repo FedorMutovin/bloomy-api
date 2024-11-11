@@ -40,14 +40,14 @@ RSpec.describe TaskRepository do
     end
   end
 
-  describe '.add' do
+  describe '.add(**params)' do
     let(:user) { create(:user) }
     let(:params) do
       { name: 'task name', description: 'task description', priority: 1, user_id: user.id, initiated_at: Time.zone.now }
     end
 
     it 'creates a goal' do
-      expect { described_class.add(params:) }.to change(Task, :count).by(1)
+      expect { described_class.add(**params) }.to change(Task, :count).by(1)
     end
   end
 end

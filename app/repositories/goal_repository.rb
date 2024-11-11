@@ -9,7 +9,7 @@ class GoalRepository
     Goal.find(id)
   end
 
-  def self.add(params:)
-    Goal.create!(params)
+  def self.add(**params)
+    Goal.create!(**params)
   end
 end

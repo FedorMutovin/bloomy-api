@@ -23,4 +23,21 @@ RSpec.describe Events::ScheduleRepository do
       expect(result).not_to include(other_user_schedule)
     end
   end
+
+  describe 'add(**params)' do
+    let(:user) { create(:user) }
+    let!(:task) { create(:task, user:) }
+    let(:params) do
+      {
+        scheduable_id: task.id,
+        scheduable_type: task.class.name,
+        user_id: user.id,
+        scheduled_at: Time.zone.now
+      }
+    end
+
+    it 'creates a Events::Schedules' do
+      expect { described_class.add(**params) }.to change(Events::Schedule, :count).by(1)
+    end
+  end
 end

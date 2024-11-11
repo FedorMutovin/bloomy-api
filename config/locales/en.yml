@@ -1,31 +1,10 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  errors:
+    events:
+      trackable:
+        start_date_time_in_future: "Start date time must be less than the current time."
+        start_date_required_for_in_progress: "Start date is required when status is set to %{status}."
+        schedule_required_for_scheduled: "Schedule key is required when status is set to %{status}."
+        status_must_be_in_progress: "Status must be %{status_in_progress}."
+        status_must_be_scheduled: "Status must be %{status_scheduled}."
+        both_started_at_and_schedule_present: "Cannot have both started_at and schedule."

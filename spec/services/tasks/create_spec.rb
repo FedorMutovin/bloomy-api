@@ -2,71 +2,95 @@
 
 require 'rails_helper'
 
-RSpec.describe Tasks::Create do
-  subject(:service) { described_class.new(params:, user_id:, trigger_params:) }
+RSpec.describe Tasks::Create, type: :service do
+  subject(:service_call) { described_class.call(params) }
 
-  let(:user_id) { '1' }
-  let(:params) do
+  let(:user) { create(:user) }
+  let(:attributes) do
     {
-      name: 'Practice coding',
-      description: 'Solve problems on LeetCode',
-      priority: 2,
-      initiated_at: Time.zone.now
+      user_id: user.id,
+      name: 'Test Task',
+      description: 'Task description',
+      priority: 1,
+      initiated_at: DateTime.current,
+      started_at: DateTime.current - 1.hour,
+      status: Status::IN_PROGRESS
     }
   end
-  let(:trigger_params) { {} }
+
+  let(:params) { attributes }
 
   describe '#call' do
-    let(:task) { build(:task) }
-
-    before do
-      allow(TaskRepository).to receive(:add).and_return(task)
-    end
-
-    it 'adds user_id to params and creates the task' do
-      expected_params = params.deep_dup
-      expected_params[:user_id] = user_id
-
-      service.call
-
-      expect(TaskRepository).to have_received(:add).with(params: expected_params)
-    end
-
-    context 'when trigger_params is provided' do
-      let(:trigger_data) { { 'id' => '51fa64d8-3531-466f-a60f-af64857422d7', 'event_type' => 'Goal' } }
-      let(:trigger_params) { trigger_data }
-      let(:relationships_create_instance) { instance_double(Events::Relationships::Create) }
-
-      before do
-        allow(Events::Relationships::Create).to receive(:new).and_return(relationships_create_instance)
-        allow(relationships_create_instance).to receive(:call)
+    context 'when creating a task' do
+      it 'creates a new task with the specified attributes' do
+        allow(TaskRepository).to receive(:add)
+        service_call
+        expect(TaskRepository).to have_received(:add).with(attributes)
       end
+    end
 
-      it 'calls Events::Relationships::Create with correct parameters' do
-        service.call
+    context 'when adding an event relationship' do
+      let(:trigger_params) do
+        { trigger: { id: 'goal-id', event_type: 'Goal' } }
+      end
+      let(:params) { attributes.merge(trigger_params) }
+      let(:task) { build_stubbed(:task, user:, name: 'Test Task', description: 'Task description') }
 
-        expect(Events::Relationships::Create).to have_received(:new).with(
-          trigger_id: trigger_data['id'],
-          trigger_type: trigger_data['event_type'],
-          target_id: task.id,
-          target_type: 'Task'
+      it 'adds an event relationship if trigger is present' do
+        allow(TaskRepository).to receive(:add).and_return(task)
+        allow(Events::RelationshipRepository).to receive(:add)
+
+        service_call
+
+        expect(Events::RelationshipRepository).to have_received(:add).with(
+          triggerable_id: params[:trigger][:id],
+          triggerable_type: params[:trigger][:event_type],
+          impactable_id: task.id,
+          impactable_type: task.class.name
         )
-
-        expect(relationships_create_instance).to have_received(:call)
       end
     end
 
-    context 'when trigger_params is empty' do
-      let(:trigger_params) { {} }
-
-      before do
-        allow(Events::Relationships::Create).to receive(:new)
+    context 'when adding a schedule' do
+      let(:schedule_params) do
+        { schedule: { scheduled_at: DateTime.current + 1.day } }
       end
+      let(:params) { attributes.merge(schedule_params) }
+      let(:task) { build_stubbed(:task, user:, name: 'Test Task', description: 'Task description') }
 
-      it 'does not call Events::Relationships::Create' do
-        service.call
+      it 'adds a schedule if schedule is present' do
+        allow(TaskRepository).to receive(:add).and_return(task)
+        allow(Events::ScheduleRepository).to receive(:add)
 
-        expect(Events::Relationships::Create).not_to have_received(:new)
+        service_call
+
+        expect(Events::ScheduleRepository).to have_received(:add).with(
+          scheduable_id: task.id,
+          scheduable_type: task.class.name,
+          scheduled_at: schedule_params[:schedule][:scheduled_at],
+          user_id: user.id,
+          details: { name: task.name, description: task.description }
+        )
+      end
+    end
+
+    context 'when trigger and schedule are both present' do
+      let(:params) do
+        attributes.merge(trigger: { id: 'goal-id', event_type: 'Goal' },
+                         schedule: { scheduled_at: DateTime.current + 1.day })
+      end
+      let(:task) { build_stubbed(:task, user:, name: 'Test Task', description: 'Task description') }
+
+      it 'creates task, adds event relationship, and adds schedule within a transaction' do
+        allow(TaskRepository).to receive(:add).and_return(task)
+        allow(Events::RelationshipRepository).to receive(:add)
+        allow(Events::ScheduleRepository).to receive(:add)
+
+        service_call
+
+        expect(TaskRepository).to have_received(:add)
+        expect(Events::RelationshipRepository).to have_received(:add)
+        expect(Events::ScheduleRepository).to have_received(:add)
       end
     end
   end

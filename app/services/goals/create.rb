@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module Goals
-  class Create < Events::Create
+  class Create < ApplicationService
+    param :params, reader: :private
 
     def call
-      prepare_params
       ActiveRecord::Base.transaction do
         @goal = create_goal!
-        link_event_relationship unless @trigger_params.empty?
+        add_event_relationship if params[:trigger].present?
       end
 
       @goal
@@ -16,21 +16,24 @@ module Goals
     private
 
     def create_goal!
-      GoalRepository.add(params:)
+      GoalRepository.add(
+        user_id: params[:user_id],
+        name: params[:name],
+        description: params[:description],
+        priority: params[:priority],
+        initiated_at: params[:initiated_at],
+        started_at: params[:started_at],
+        status: params[:status]
+      )
     end
 
-    def link_event_relationship
-      Events::Relationships::Create.new(
-        trigger_id: trigger_params['id'],
-        trigger_type: trigger_params['event_type'],
-        target_id: @goal.id,
-        target_type: @goal.class.name
-      ).call
-    end
-
-    def prepare_params
-      super
-      params[:tasks_attributes]&.each { |task| task.merge!(user_id:) }
+    def add_event_relationship
+      Events::RelationshipRepository.add(
+        triggerable_id: params[:trigger][:id],
+        triggerable_type: params[:trigger][:event_type],
+        impactable_id: @goal.id,
+        impactable_type: @goal.class.name
+      )
     end
   end
 end

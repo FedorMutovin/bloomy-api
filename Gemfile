@@ -31,6 +31,12 @@ gem 'paper_trail', '~> 15.2.0'
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
+# Contracts for controller parameters
+gem 'dry-validation', '~> 1.10'
+
+# Application Service params initializer
+gem 'dry-initializer'
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem 'bcrypt', '~> 3.1.7'
 

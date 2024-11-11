@@ -14,23 +14,20 @@ module Api
       end
 
       def create
-        goal = Goals::Create.new(params: goals_params, user_id: current_user.id, trigger_params:).call
-        render json: GoalSerializer.new(except: [:tasks]).serialize(goal)
+        result = validate_params(contract: Goals::CreateContract.new, params: params[:goal])
+
+        if result.success?
+          goal = Goals::Create.call(result.to_h.merge(user_id: current_user.id))
+          render json: GoalSerializer.new.serialize(goal)
+        else
+          render json: { errors: result.errors.to_h }, status: :unprocessable_entity
+        end
       end
 
       private
 
       def goal
         @goal ||= GoalRepository.by_id(id: params[:id])
-      end
-
-      def goals_params
-        params.require(:goal).permit(:name, :description, :priority, :initiated_at,
-                                     tasks_attributes: %i[name description priority initiated_at])
-      end
-
-      def trigger_params
-        params.require(:goal).fetch(:trigger, {}).permit(:id, :event_type, :name)
       end
     end
   end

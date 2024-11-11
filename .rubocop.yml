@@ -40,3 +40,6 @@ RSpec/MultipleExpectations:
 
 RSpec/SpecFilePathFormat:
   Enabled: false
+
+Rails/DeprecatedActiveModelErrorsMethods:
+  Enabled: false

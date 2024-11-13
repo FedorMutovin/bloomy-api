@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_11_113147) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_13_202229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -39,12 +39,12 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_11_113147) do
   end
 
   create_table "decisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.text "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
     t.datetime "initiated_at", null: false
     t.string "name", null: false
+    t.text "description"
     t.index ["user_id"], name: "index_decisions_on_user_id"
   end
 
@@ -125,6 +125,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_11_113147) do
     t.integer "engagement_level", default: 0
     t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_hobbies_on_user_id"
+  end
+
+  create_table "independent_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.datetime "occurred_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_independent_events_on_user_id"
   end
 
   create_table "interests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -236,6 +246,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_11_113147) do
   add_foreign_key "everyday_quotes", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "hobbies", "users"
+  add_foreign_key "independent_events", "users"
   add_foreign_key "interests", "users"
   add_foreign_key "movies", "users"
   add_foreign_key "tasks", "goals"
@@ -314,6 +325,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_11_113147) do
       interests.name,
       interests.initiated_at,
       interests.user_id
-     FROM interests;
+     FROM interests
+  UNION ALL
+   SELECT independent_events.id,
+      'IndependentEvent'::text AS event_type,
+      independent_events.name,
+      independent_events.occurred_at AS initiated_at,
+      independent_events.user_id
+     FROM independent_events;
   SQL
 end

@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :interests, dependent: :destroy
   has_many :activities, dependent: :destroy
   has_many :movies, dependent: :destroy
+  has_many :independent_events, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :password_digest, presence: true

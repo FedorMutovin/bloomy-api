@@ -28,9 +28,9 @@ RSpec.describe EventRepository do
 
       it 'returns events ordered by initiated_at' do
         result = described_class.by_user_id(user_id: user.id)
-        expect(result[0]['id']).to eq(goal.id)
+        expect(result[2]['id']).to eq(goal.id)
         expect(result[1]['id']).to eq(task.id)
-        expect(result[2]['id']).to eq(travel.id)
+        expect(result[0]['id']).to eq(travel.id)
       end
     end
   end

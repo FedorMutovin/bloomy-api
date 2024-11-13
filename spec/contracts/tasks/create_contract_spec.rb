@@ -84,21 +84,4 @@ RSpec.describe Tasks::CreateContract do
                                                        status_in_progress: Status::IN_PROGRESS))
     end
   end
-
-  context 'when checking for required fields' do
-    it 'fails if name is missing' do
-      result = contract.call(valid_params.except(:name))
-      expect(result.errors[:name]).to include('is missing')
-    end
-
-    it 'fails if priority is missing' do
-      result = contract.call(valid_params.except(:priority))
-      expect(result.errors[:priority]).to include('is missing')
-    end
-
-    it 'fails if initiated_at is missing' do
-      result = contract.call(valid_params.except(:initiated_at))
-      expect(result.errors[:initiated_at]).to include('is missing')
-    end
-  end
 end

@@ -22,9 +22,9 @@ RSpec.describe Api::V1::EventsController do
       expect(json_response).to be_an(Array)
       expect(json_response.count).to eq(3)
 
-      expect(json_response[0]['event_type']).to eq('Goal')
+      expect(json_response[2]['event_type']).to eq('Goal')
       expect(json_response[1]['event_type']).to eq('Task')
-      expect(json_response[2]['event_type']).to eq('Travel')
+      expect(json_response[0]['event_type']).to eq('Travel')
     end
   end
 end

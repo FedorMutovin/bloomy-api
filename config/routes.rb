@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       resources :goals, only: %i[index show create]
       resources :wishes, only: %i[index create show]
       resources :tasks, only: %i[index create]
+      resources :actions, only: %i[index create]
       resources :events, only: [:index]
       resources :everyday_quotes, only: [:index]
       get 'users/current', to: 'users#current'

@@ -2,6 +2,6 @@
 
 class EventRepository
   def self.by_user_id(user_id:)
-    Event.where(user_id:).order(initiated_at: :asc).to_a
+    Event.where(user_id:).order(initiated_at: :desc).to_a
   end
 end

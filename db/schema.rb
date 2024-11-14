@@ -253,6 +253,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_202229) do
   add_foreign_key "tasks", "users"
   add_foreign_key "thoughts", "users"
   add_foreign_key "travels", "users"
+  add_foreign_key "travels", "vacations"
   add_foreign_key "vacations", "users"
   add_foreign_key "wishes", "users"
 

@@ -23,7 +23,6 @@ RSpec.describe Api::V1::GoalsController do
         expect(json_response.first['closed_at']).to eq(goal.closed_at)
         expect(json_response.first['started_at']).to eq(goal.started_at.iso8601)
         expect(json_response.first['priority']).to eq(goal.priority)
-        expect(json_response.first['tasks']).to be_nil
       end
     end
   end
@@ -33,8 +32,6 @@ RSpec.describe Api::V1::GoalsController do
     let(:goal) { create(:goal, user:, status: 'pending') }
 
     context 'when goal exists' do
-      before { create(:task, user:, goal:) }
-
       it 'returns goal for the user with associations' do
         get api_v1_goal_path(id: goal.id)
 
@@ -48,7 +45,6 @@ RSpec.describe Api::V1::GoalsController do
         expect(json_response['closed_at']).to eq(goal.closed_at)
         expect(json_response['started_at']).to eq(goal.started_at.iso8601)
         expect(json_response['priority']).to eq(goal.priority)
-        expect(json_response['tasks']).not_to be_nil
       end
     end
 

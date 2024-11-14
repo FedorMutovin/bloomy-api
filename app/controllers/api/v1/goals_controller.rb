@@ -6,7 +6,7 @@ module Api
       before_action :goal, only: %i[show]
       def index
         goals = GoalRepository.by_user_id(user_id: current_user.id)
-        render json: Panko::ArraySerializer.new(goals, each_serializer: GoalSerializer, except: [:tasks]).to_json
+        render json: Panko::ArraySerializer.new(goals, each_serializer: GoalSerializer).to_json
       end
 
       def show

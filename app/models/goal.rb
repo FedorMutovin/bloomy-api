@@ -5,11 +5,7 @@ class Goal < ApplicationRecord
   include Reflectable
   include EngagementChangable
 
-  has_many :actions, dependent: :destroy
-  has_many :tasks, dependent: :destroy
   belongs_to :user
-
-  accepts_nested_attributes_for :tasks
 
   validates :name, :status, :initiated_at, presence: true
   validates :status, inclusion: { in: Statuses::Goal::ALLOWED_STATUSES }

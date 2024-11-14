@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_13_202229) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_14_232902) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -19,13 +19,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_202229) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "goal_id"
     t.uuid "user_id", null: false
-    t.uuid "task_id"
     t.datetime "initiated_at", null: false
     t.string "name", null: false
-    t.index ["goal_id"], name: "index_actions_on_goal_id"
-    t.index ["task_id"], name: "index_actions_on_task_id"
     t.index ["user_id"], name: "index_actions_on_user_id"
   end
 
@@ -160,7 +156,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_202229) do
 
   create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
-    t.uuid "goal_id"
     t.string "name", null: false
     t.text "description"
     t.datetime "created_at", null: false
@@ -172,7 +167,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_202229) do
     t.datetime "postponed_at"
     t.datetime "postponed_until"
     t.datetime "started_at"
-    t.index ["goal_id"], name: "index_tasks_on_goal_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
@@ -237,8 +231,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_202229) do
     t.index ["user_id"], name: "index_wishes_on_user_id"
   end
 
-  add_foreign_key "actions", "goals"
-  add_foreign_key "actions", "tasks"
   add_foreign_key "actions", "users"
   add_foreign_key "activities", "users"
   add_foreign_key "decisions", "users"
@@ -249,7 +241,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_202229) do
   add_foreign_key "independent_events", "users"
   add_foreign_key "interests", "users"
   add_foreign_key "movies", "users"
-  add_foreign_key "tasks", "goals"
   add_foreign_key "tasks", "users"
   add_foreign_key "thoughts", "users"
   add_foreign_key "travels", "users"

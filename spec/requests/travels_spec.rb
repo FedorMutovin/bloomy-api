@@ -20,6 +20,8 @@ RSpec.describe Api::V1::TravelsController do
         expect(json_response.first['destination']).to eq(travel.destination)
         expect(json_response.first['initiated_at']).to eq(travel.initiated_at.iso8601)
         expect(json_response.first['description']).to eq(travel.description)
+        expect(json_response.first['start_at']).to eq(travel.start_at.iso8601)
+        expect(json_response.first['end_at']).to eq(travel.end_at.iso8601)
       end
     end
   end

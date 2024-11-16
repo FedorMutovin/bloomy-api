@@ -5,8 +5,8 @@ class WishRepository
     Wish.where(user_id:, activated_at: nil).order(priority: :asc).to_a
   end
 
-  def self.add(params:)
-    Wish.create!(params)
+  def self.add(**params)
+    Wish.create!(**params)
   end
 
   def self.by_id(id:)

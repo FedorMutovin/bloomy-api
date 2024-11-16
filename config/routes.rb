@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :schedules, only: [:index]
       resources :travels, only: [:index]
+      resources :works, only: [:index]
       resources :goals, only: %i[index show create]
       resources :wishes, only: %i[index create show]
       resources :tasks, only: %i[index create]

@@ -13,6 +13,8 @@ RSpec.describe User do
   it { is_expected.to have_many :movies }
   it { is_expected.to have_many :activities }
   it { is_expected.to have_many :wishes }
+  it { is_expected.to have_many :independent_events }
+  it { is_expected.to have_many :works }
   it { is_expected.to validate_presence_of :email }
 
   describe 'validate email uniqueness' do

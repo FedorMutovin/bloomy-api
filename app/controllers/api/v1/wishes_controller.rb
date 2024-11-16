@@ -14,15 +14,17 @@ module Api
       end
 
       def create
-        wish = WishRepository.add(params: wishes_params.merge(user_id: current_user.id))
-        render json: WishSerializer.new.serialize_to_json(wish)
+        result = validate_params(contract: Events::CreateContract.new, params: params[:wish])
+
+        if result.success?
+          task = Wishes::Create.call(result.to_h.merge(user_id: current_user.id))
+          render json: WishSerializer.new.serialize(task)
+        else
+          render json: { errors: result.errors.to_h }, status: :unprocessable_entity
+        end
       end
 
       private
-
-      def wishes_params
-        params.require(:wish).permit(:name, :description, :priority, :initiated_at)
-      end
 
       def wish
         @wish ||= WishRepository.by_id(id: params[:id])

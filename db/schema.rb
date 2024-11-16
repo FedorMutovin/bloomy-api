@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_16_121515) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_16_142029) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -32,6 +32,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_121515) do
     t.datetime "updated_at", null: false
     t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_activities_on_user_id"
+  end
+
+  create_table "conflicts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "with", null: false
+    t.text "description"
+    t.datetime "initiated_at", null: false
+    t.integer "impact", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_conflicts_on_user_id"
   end
 
   create_table "decisions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -198,8 +209,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_121515) do
     t.datetime "updated_at", null: false
     t.uuid "vacation_id"
     t.datetime "initiated_at", null: false
-    t.datetime "start_at", null: false
-    t.datetime "end_at", null: false
+    t.datetime "start_at"
+    t.datetime "end_at"
     t.index ["user_id"], name: "index_travels_on_user_id"
     t.index ["vacation_id"], name: "index_travels_on_vacation_id"
   end
@@ -275,6 +286,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_121515) do
 
   add_foreign_key "actions", "users"
   add_foreign_key "activities", "users"
+  add_foreign_key "conflicts", "users"
   add_foreign_key "decisions", "users"
   add_foreign_key "event_schedules", "users"
   add_foreign_key "everyday_quotes", "users"
@@ -369,6 +381,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_121515) do
       independent_events.name,
       independent_events.occurred_at AS initiated_at,
       independent_events.user_id
-     FROM independent_events;
+     FROM independent_events
+  UNION ALL
+   SELECT incidents.id,
+      'Incident'::text AS event_type,
+      incidents.name,
+      incidents.initiated_at,
+      incidents.user_id
+     FROM incidents
+  UNION ALL
+   SELECT conflicts.id,
+      'Conflict'::text AS event_type,
+      conflicts."with" AS name,
+      conflicts.initiated_at,
+      conflicts.user_id
+     FROM conflicts;
   SQL
 end

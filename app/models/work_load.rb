@@ -1,4 +1,6 @@
-class WorkLoad < ActiveRecord::Base
+# frozen_string_literal: true
+
+class WorkLoad < ApplicationRecord
   MAX_LOAD_VALUE = 2
   MIN_LOAD_VALUE = 0
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_15_093404) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_16_121515) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -123,6 +123,17 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_15_093404) do
     t.index ["user_id"], name: "index_hobbies_on_user_id"
   end
 
+  create_table "incidents", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "name", null: false
+    t.text "description"
+    t.datetime "initiated_at", null: false
+    t.integer "impact", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_incidents_on_user_id"
+  end
+
   create_table "independent_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "user_id", null: false
     t.string "name", null: false
@@ -233,6 +244,35 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_15_093404) do
     t.index ["user_id"], name: "index_wishes_on_user_id"
   end
 
+  create_table "work_load_changes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "work_load_id", null: false
+    t.integer "last_value", null: false
+    t.integer "new_value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "reason", null: false
+    t.index ["work_load_id"], name: "index_work_load_changes_on_work_load_id"
+  end
+
+  create_table "work_loads", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "work_id", null: false
+    t.integer "value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["work_id"], name: "index_work_loads_on_work_id"
+  end
+
+  create_table "works", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "company_name", null: false
+    t.string "position_name", null: false
+    t.date "start_date", null: false
+    t.date "end_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_works_on_user_id"
+  end
+
   add_foreign_key "actions", "users"
   add_foreign_key "activities", "users"
   add_foreign_key "decisions", "users"
@@ -240,15 +280,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_15_093404) do
   add_foreign_key "everyday_quotes", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "hobbies", "users"
+  add_foreign_key "incidents", "users"
   add_foreign_key "independent_events", "users"
   add_foreign_key "interests", "users"
   add_foreign_key "movies", "users"
   add_foreign_key "tasks", "users"
   add_foreign_key "thoughts", "users"
   add_foreign_key "travels", "users"
-  add_foreign_key "travels", "vacations"
   add_foreign_key "vacations", "users"
   add_foreign_key "wishes", "users"
+  add_foreign_key "work_load_changes", "work_loads"
+  add_foreign_key "work_loads", "works"
+  add_foreign_key "works", "users"
 
   create_view "events", sql_definition: <<-SQL
       SELECT tasks.id,

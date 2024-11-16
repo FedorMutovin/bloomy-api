@@ -2,9 +2,8 @@
 
 require 'rails_helper'
 
-RSpec.describe Work do
+RSpec.describe Incident do
   it { is_expected.to belong_to :user }
-  it { is_expected.to have_one :work_load }
 
   it_behaves_like 'relatable'
 end

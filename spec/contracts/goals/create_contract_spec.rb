@@ -41,4 +41,36 @@ RSpec.describe Goals::CreateContract do
       )
     end
   end
+
+  context 'when checking engagement_changes rules' do
+    it 'fails if engagement_changes.value is less than the minimum' do
+      result = contract.call(valid_params.merge(
+                               engagement_changes: { value: GoalEngagementChange::MIN_CHANGE_VALUE - 1 }
+                             ))
+      expect(result.errors[:engagement_changes]).to include(
+        I18n.t('errors.events.engagementable.must_be_not_less_than',
+               min_value: GoalEngagementChange::MIN_CHANGE_VALUE)
+      )
+    end
+
+    it 'fails if engagement_changes.value is more than the maximum' do
+      result = contract.call(valid_params.merge(engagement_changes: {
+                                                  value: GoalEngagementChange::MAX_CHANGE_VALUE + 1
+                                                }))
+      expect(result.errors[:engagement_changes]).to include(
+        I18n.t('errors.events.engagementable.must_be_no_more_than',
+               max_value: GoalEngagementChange::MAX_CHANGE_VALUE)
+      )
+    end
+
+    it 'is valid if engagement_changes.value is within the allowed range' do
+      result = contract.call(
+        valid_params
+          .merge(
+            engagement_changes: { value: GoalEngagementChange::MAX_CHANGE_VALUE }
+          )
+      )
+      expect(result).to be_success
+    end
+  end
 end

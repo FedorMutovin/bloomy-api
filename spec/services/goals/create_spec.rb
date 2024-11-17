@@ -50,5 +50,25 @@ RSpec.describe Goals::Create, type: :service do
         )
       end
     end
+
+    context 'when adding engagement changes' do
+      let(:engagement_changes) do
+        { engagement_changes: { value: 1 } }
+      end
+      let(:params) { attributes.merge(engagement_changes) }
+      let(:goal) { build_stubbed(:goal, user:, name: 'goal', description: 'goal description') }
+
+      it 'adds an engagement change if engagement_changes is present' do
+        allow(GoalRepository).to receive(:add).and_return(goal)
+        allow(GoalEngagementRepository).to receive(:add)
+
+        service_call
+
+        expect(GoalEngagementRepository).to have_received(:add).with(
+          goal_id: goal.id,
+          value: params[:engagement_changes][:value]
+        )
+      end
+    end
   end
 end

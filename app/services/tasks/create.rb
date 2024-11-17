@@ -9,6 +9,7 @@ module Tasks
         @task = create_task!
         add_event_relationship if params[:trigger].present?
         add_schedule if params[:schedule].present?
+        add_engagement_change if params[:engagement_changes].present?
       end
 
       @task
@@ -45,6 +46,10 @@ module Tasks
         user_id: @task.user_id,
         details: { name: @task.name, description: @task.description }
       )
+    end
+
+    def add_engagement_change
+      TaskEngagementRepository.add(task_id: @task.id, value: params[:engagement_changes][:value])
     end
   end
 end

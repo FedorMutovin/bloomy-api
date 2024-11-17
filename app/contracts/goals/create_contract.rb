@@ -5,6 +5,9 @@ module Goals
     params(Events::CreateContract.schema) do
       optional(:started_at).filled(:date_time)
       optional(:status).filled(:string, included_in?: Statuses::Goal::ALLOWED_FOR_CREATE)
+      optional(:engagement_changes).hash do
+        required(:value).filled(:integer)
+      end
     end
 
     rule(:started_at) do
@@ -19,6 +22,24 @@ module Goals
       if values[:started_at] && values[:status] != Status::IN_PROGRESS
         key.failure(I18n.t('errors.events.trackable.status_must_be_in_progress',
                            status_in_progress: Status::IN_PROGRESS))
+      end
+    end
+
+    rule(:engagement_changes) do
+      if value && value[:value]
+        if value[:value] < GoalEngagementChange::MIN_CHANGE_VALUE
+          key.failure(
+            I18n.t('errors.events.engagementable.must_be_not_less_than',
+                   min_value: GoalEngagementChange::MIN_CHANGE_VALUE)
+          )
+        end
+
+        if value[:value] > GoalEngagementChange::MAX_CHANGE_VALUE
+          key.failure(
+            I18n.t('errors.events.engagementable.must_be_no_more_than',
+                   max_value: GoalEngagementChange::MAX_CHANGE_VALUE)
+          )
+        end
       end
     end
   end

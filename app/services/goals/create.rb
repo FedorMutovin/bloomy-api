@@ -8,6 +8,7 @@ module Goals
       ActiveRecord::Base.transaction do
         @goal = create_goal!
         add_event_relationship if params[:trigger].present?
+        add_engagement_change if params[:engagement_changes].present?
       end
 
       @goal
@@ -34,6 +35,10 @@ module Goals
         impactable_id: @goal.id,
         impactable_type: @goal.class.name
       )
+    end
+
+    def add_engagement_change
+      GoalEngagementRepository.add(goal_id: @goal.id, value: params[:engagement_changes][:value])
     end
   end
 end

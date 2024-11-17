@@ -5,7 +5,8 @@ require 'rails_helper'
 RSpec.describe Api::V1::GoalsController do
   describe 'GET /api/v1/goals' do
     let(:user) { create(:user) }
-    let!(:goal) { create(:goal, user:, status: 'pending') }
+    let(:goal) { create(:goal, user:, status: 'pending') }
+    let!(:goal_engagement) { create(:goal_engagement, value: 1, goal:) }
 
     context 'when user exists' do
       it 'returns goals for the user' do
@@ -23,6 +24,7 @@ RSpec.describe Api::V1::GoalsController do
         expect(json_response.first['closed_at']).to eq(goal.closed_at)
         expect(json_response.first['started_at']).to eq(goal.started_at.iso8601)
         expect(json_response.first['priority']).to eq(goal.priority)
+        expect(json_response.first['engagement']).to eq(goal_engagement.value)
       end
     end
   end
@@ -30,6 +32,7 @@ RSpec.describe Api::V1::GoalsController do
   describe 'GET /api/v1/goals/:id' do
     let(:user) { create(:user) }
     let(:goal) { create(:goal, user:, status: 'pending') }
+    let!(:goal_engagement) { create(:goal_engagement, value: 1, goal:) }
 
     context 'when goal exists' do
       it 'returns goal for the user with associations' do
@@ -45,6 +48,7 @@ RSpec.describe Api::V1::GoalsController do
         expect(json_response['closed_at']).to eq(goal.closed_at)
         expect(json_response['started_at']).to eq(goal.started_at.iso8601)
         expect(json_response['priority']).to eq(goal.priority)
+        expect(json_response['engagement']).to eq(goal_engagement.value)
       end
     end
 

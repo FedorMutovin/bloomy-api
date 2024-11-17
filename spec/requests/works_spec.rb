@@ -6,9 +6,10 @@ RSpec.describe Api::V1::WorksController do
   describe 'GET /api/v1/works' do
     let(:user) { create(:user) }
     let(:work) { create(:work, user:) }
-    let!(:work_load) { create(:work_load, work:) }
 
     context 'when user exists' do
+      before { create(:work_load, work:) }
+
       it 'returns works for the user' do
         get api_v1_works_path(user_id: user.id)
 

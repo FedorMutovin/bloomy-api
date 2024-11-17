@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_16_142029) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_17_093248) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -55,17 +55,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_142029) do
     t.index ["user_id"], name: "index_decisions_on_user_id"
   end
 
-  create_table "event_engagement_changes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "target_type", null: false
-    t.uuid "target_id", null: false
-    t.integer "value", null: false
-    t.text "reason", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "initiated_at", null: false
-    t.index ["target_type", "target_id"], name: "index_event_engagement_changes_on_target"
-  end
-
   create_table "event_reflections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "reflectable_type", null: false
     t.uuid "reflectable_id", null: false
@@ -105,6 +94,25 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_142029) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_everyday_quotes_on_user_id"
+  end
+
+  create_table "goal_engagement_changes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "goal_engagement_id", null: false
+    t.integer "last_value", null: false
+    t.integer "new_value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "reason", null: false
+    t.datetime "initiated_at", null: false
+    t.index ["goal_engagement_id"], name: "index_goal_engagement_changes_on_goal_engagement_id"
+  end
+
+  create_table "goal_engagements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "goal_id", null: false
+    t.integer "value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["goal_id"], name: "index_goal_engagements_on_goal_id"
   end
 
   create_table "goals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -174,6 +182,25 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_142029) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_movies_on_user_id"
+  end
+
+  create_table "task_engagement_changes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "task_engagement_id", null: false
+    t.integer "last_value", null: false
+    t.integer "new_value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "reason", null: false
+    t.datetime "initiated_at", null: false
+    t.index ["task_engagement_id"], name: "index_task_engagement_changes_on_task_engagement_id"
+  end
+
+  create_table "task_engagements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "task_id", null: false
+    t.integer "value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["task_id"], name: "index_task_engagements_on_task_id"
   end
 
   create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -290,12 +317,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_142029) do
   add_foreign_key "decisions", "users"
   add_foreign_key "event_schedules", "users"
   add_foreign_key "everyday_quotes", "users"
+  add_foreign_key "goal_engagement_changes", "goal_engagements"
+  add_foreign_key "goal_engagements", "goals"
   add_foreign_key "goals", "users"
   add_foreign_key "hobbies", "users"
   add_foreign_key "incidents", "users"
   add_foreign_key "independent_events", "users"
   add_foreign_key "interests", "users"
   add_foreign_key "movies", "users"
+  add_foreign_key "task_engagement_changes", "task_engagements"
+  add_foreign_key "task_engagements", "tasks"
   add_foreign_key "tasks", "users"
   add_foreign_key "thoughts", "users"
   add_foreign_key "travels", "users"

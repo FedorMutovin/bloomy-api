@@ -93,5 +93,25 @@ RSpec.describe Tasks::Create, type: :service do
         expect(Events::ScheduleRepository).to have_received(:add)
       end
     end
+
+    context 'when adding engagement changes' do
+      let(:engagement_changes) do
+        { engagement_changes: { value: 1 } }
+      end
+      let(:params) { attributes.merge(engagement_changes) }
+      let(:task) { build_stubbed(:task, user:, name: 'task', description: 'task description') }
+
+      it 'adds an engagement change if engagement_changes is present' do
+        allow(TaskRepository).to receive(:add).and_return(task)
+        allow(TaskEngagementRepository).to receive(:add)
+
+        service_call
+
+        expect(TaskEngagementRepository).to have_received(:add).with(
+          task_id: task.id,
+          value: params[:engagement_changes][:value]
+        )
+      end
+    end
   end
 end

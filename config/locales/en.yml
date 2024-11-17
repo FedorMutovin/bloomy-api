@@ -1,6 +1,9 @@
 en:
   errors:
     events:
+      engagementable:
+        must_be_not_less_than: "Engagement change should be no less than %{min_value}"
+        must_be_no_more_than: "Engagement change should be no more than %{max_value}"
       trackable:
         start_date_time_in_future: "Start date time must be less than the current time."
         start_date_required_for_in_progress: "Start date is required when status is set to %{status}."

@@ -27,4 +27,16 @@ RSpec.describe TravelRepository do
       end
     end
   end
+
+  describe '.add(**params)' do
+    let(:user) { create(:user) }
+    let(:params) do
+      { destination: 'travel destination', description: 'travel description', user_id: user.id,
+        initiated_at: Time.zone.now, start_at: 1.day.from_now, end_at: 10.days.from_now }
+    end
+
+    it 'creates a travel' do
+      expect { described_class.add(**params) }.to change(Travel, :count).by(1)
+    end
+  end
 end

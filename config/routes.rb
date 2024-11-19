@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :schedules, only: [:index]
-      resources :travels, only: [:index]
+      resources :travels, only: %i[index create]
       resources :works, only: [:index]
       resources :goals, only: %i[index show create]
       resources :wishes, only: %i[index create show]

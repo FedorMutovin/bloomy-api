@@ -38,6 +38,21 @@ RSpec.describe Travels::CreateContract do
       expect(result.errors[:initiated_at]).to include('is missing')
     end
 
+    it 'fails if start_at is missing' do
+      result = contract.call(params.except(:start_at))
+      expect(result.errors[:start_at]).to include('is missing')
+    end
+
+    it 'fails if end_at is missing' do
+      result = contract.call(params.except(:end_at))
+      expect(result.errors[:end_at]).to include('is missing')
+    end
+
+    it 'fails if destination is missing' do
+      result = contract.call(params.except(:destination))
+      expect(result.errors[:destination]).to include('is missing')
+    end
+
     context 'when trigger id is missing' do
       let(:trigger_params) do
         {
@@ -90,7 +105,7 @@ RSpec.describe Travels::CreateContract do
   context 'when checking started_at rules' do
     it 'fails if started_at is in the future' do
       result = contract.call(params.merge(end_at: DateTime.current - 10.hours))
-      expect(result.errors[:end_at]).to include(I18n.t('errors.events.trackable.end_date_time_in_future'))
+      expect(result.errors[:end_at]).to include(I18n.t('errors.events.trackable.end_date_time_before_start_date_time'))
     end
   end
 end

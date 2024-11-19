@@ -16,7 +16,9 @@ module Travels
     end
 
     rule(:end_at) do
-      key.failure(I18n.t('errors.events.trackable.end_date_time_in_future')) if key? && value < values[:start_at]
+      if key? && values[:start_at].present? && values[:start_at] >= value
+        key.failure(I18n.t('errors.events.trackable.end_date_time_before_start_date_time'))
+      end
     end
   end
 end

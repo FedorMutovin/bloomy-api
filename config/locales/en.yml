@@ -6,6 +6,7 @@ en:
         must_be_no_more_than: "Engagement change should be no more than %{max_value}"
       trackable:
         start_date_time_in_future: "Start date time must be less than the current time."
+        end_date_time_in_future: "End date time can't be less than the start date time."
         start_date_required_for_in_progress: "Start date is required when status is set to %{status}."
         schedule_required_for_scheduled: "Schedule key is required when status is set to %{status}."
         status_must_be_in_progress: "Status must be %{status_in_progress}."

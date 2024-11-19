@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Api::V1::TasksController do
   describe 'GET /api/v1/tasks' do
     let(:user) { create(:user) }
-    let!(:task) { create(:task, user:) }
+    let!(:task) { create(:task, user:, deadline_at: DateTime.current) }
 
     context 'when user exists' do
       it 'returns tasks for the user' do
@@ -22,6 +22,7 @@ RSpec.describe Api::V1::TasksController do
         expect(json_response.first['status']).to eq(task.status)
         expect(json_response.first['priority']).to eq(task.priority)
         expect(json_response.first['initiated_at']).to eq(task.initiated_at.iso8601)
+        expect(json_response.first['deadline_at']).to eq(task.deadline_at.iso8601)
       end
     end
   end
@@ -29,6 +30,7 @@ RSpec.describe Api::V1::TasksController do
   describe 'POST /api/v1/tasks' do
     let(:initiated_at) { '2024-11-11T17:03:32Z' }
     let(:started_at) { '2024-11-11T17:03:32Z' }
+    let(:deadline_at) { '2025-01-22T17:03:32Z' }
     let!(:params) do
       {
         task: {
@@ -38,6 +40,7 @@ RSpec.describe Api::V1::TasksController do
           started_at:,
           status: Status::IN_PROGRESS,
           initiated_at:,
+          deadline_at:,
           trigger: {
             id: 'trigger_id',
             event_type: 'some_event_type',
@@ -55,7 +58,8 @@ RSpec.describe Api::V1::TasksController do
         priority: params[:task][:priority],
         initiated_at: params[:task][:initiated_at],
         started_at: params[:task][:started_at],
-        status: params[:task][:status]
+        status: params[:task][:status],
+        deadline_at: params[:task][:deadline_at]
       )
     end
 
@@ -81,6 +85,7 @@ RSpec.describe Api::V1::TasksController do
         expect(json_response['initiated_at']).to eq(params[:task][:initiated_at])
         expect(json_response['started_at']).to eq(params[:task][:started_at])
         expect(json_response['status']).to eq(params[:task][:status])
+        expect(json_response['deadline_at']).to eq(params[:task][:deadline_at])
       end
     end
   end

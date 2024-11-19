@@ -27,7 +27,7 @@ RSpec.describe Tasks::CreateContract do
     end
   end
 
-  context 'when checking started_at rules' do
+  context 'when rule(:started_at)' do
     it 'fails if started_at is in the future' do
       result = contract.call(valid_params.merge(started_at: DateTime.current + 1.hour))
       expect(result.errors[:started_at]).to include(I18n.t('errors.events.trackable.start_date_time_in_future'))
@@ -42,7 +42,7 @@ RSpec.describe Tasks::CreateContract do
     end
   end
 
-  context 'when checking schedule rules' do
+  context 'when rule(:schedule)' do
     it 'requires schedule key when status is set to SCHEDULED' do
       result = contract.call(valid_params.except(:started_at).merge(status: Status::SCHEDULED))
       expect(result.errors[:schedule]).to include(I18n.t('errors.events.trackable.schedule_required_for_scheduled',
@@ -61,7 +61,7 @@ RSpec.describe Tasks::CreateContract do
     end
   end
 
-  context 'when checking conflicts between started_at and schedule' do
+  context 'when rule(:started_at, :schedule)' do
     it 'fails if both started_at and schedule are present' do
       result = contract.call(valid_params.merge(status: Status::SCHEDULED,
                                                 schedule: { scheduled_at: DateTime.current + 1.day }))
@@ -71,7 +71,7 @@ RSpec.describe Tasks::CreateContract do
     end
   end
 
-  context 'when checking status dependencies' do
+  context 'when rule(:status)' do
     it 'fails if status is SCHEDULED but schedule key is missing' do
       result = contract.call(valid_params.except(:started_at).merge(status: Status::SCHEDULED))
       expect(result.errors[:schedule]).to include(I18n.t('errors.events.trackable.schedule_required_for_scheduled',
@@ -85,7 +85,7 @@ RSpec.describe Tasks::CreateContract do
     end
   end
 
-  context 'when checking engagement_changes rules' do
+  context 'when rule(:engagement_changes)' do
     it 'fails if engagement_changes.value is less than the minimum' do
       result = contract.call(valid_params.merge(
                                engagement_changes: { value: TaskEngagementChange::MIN_CHANGE_VALUE - 1 }
@@ -112,6 +112,46 @@ RSpec.describe Tasks::CreateContract do
           .merge(
             engagement_changes: { value: TaskEngagementChange::MAX_CHANGE_VALUE }
           )
+      )
+      expect(result).to be_success
+    end
+  end
+
+  context 'when rule(:deadline_at)' do
+    it 'fails if deadline_at is not in the future' do
+      result = contract.call(valid_params.merge(deadline_at: DateTime.current - 1.hour))
+      expect(result.errors[:deadline_at]).to include(
+        I18n.t('errors.events.trackable.deadline_at_must_be_in_the_future')
+      )
+    end
+  end
+
+  context 'when rule(:deadline_at, :schedule)' do
+    it 'fails if deadline_at is not in the future' do
+      result = contract.call(valid_params.merge(deadline_at: DateTime.current - 1.hour))
+      expect(result.errors[:deadline_at]).to include(
+        I18n.t('errors.events.trackable.deadline_at_must_be_in_the_future')
+      )
+    end
+
+    it 'fails if deadline_at is earlier than schedule.scheduled_at' do
+      result = contract.call(
+        valid_params.merge(
+          deadline_at: DateTime.current + 1.day,
+          schedule: { scheduled_at: DateTime.current + 2.days }
+        )
+      )
+      expect(result.errors[:deadline_at])
+        .to include(I18n.t('errors.events.trackable.deadline_at_must_be_more_than_scheduled_at'))
+    end
+
+    it 'is valid if deadline_at is later than schedule.scheduled_at' do
+      result = contract.call(
+        valid_params.merge(
+          deadline_at: DateTime.current + 3.days,
+          status: Status::SCHEDULED,
+          schedule: { scheduled_at: DateTime.current + 2.days }
+        ).except(:started_at)
       )
       expect(result).to be_success
     end

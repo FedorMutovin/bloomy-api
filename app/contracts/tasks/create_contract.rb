@@ -5,6 +5,7 @@ module Tasks
     params(Events::CreateContract.schema) do
       optional(:started_at).filled(:date_time)
       optional(:status).filled(:string, included_in?: Statuses::Task::ALLOWED_FOR_CREATE)
+      optional(:deadline_at).filled(:date_time)
       optional(:schedule).hash do
         required(:scheduled_at).filled(:date_time)
       end
@@ -59,6 +60,20 @@ module Tasks
                    max_value: TaskEngagementChange::MAX_CHANGE_VALUE)
           )
         end
+      end
+    end
+
+    rule(:deadline_at) do
+      if key? && value < DateTime.current
+        key.failure(I18n.t('errors.events.trackable.deadline_at_must_be_in_the_future'))
+      end
+    end
+
+    rule(:deadline_at, :schedule) do
+      if values[:deadline_at] && values[:schedule] && values[:schedule][:scheduled_at] > (values[:deadline_at])
+        key(:deadline_at).failure(
+          I18n.t('errors.events.trackable.deadline_at_must_be_more_than_scheduled_at')
+        )
       end
     end
   end

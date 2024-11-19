@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       resources :tasks, only: %i[index create]
       resources :actions, only: %i[index create]
       resources :events, only: [:index]
+      resources :thoughts, only: %i[index create]
       resources :everyday_quotes, only: [:index]
       get 'users/current', to: 'users#current'
     end

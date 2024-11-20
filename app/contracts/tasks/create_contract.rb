@@ -4,13 +4,11 @@ module Tasks
   class CreateContract < ApplicationContract
     params(Events::CreateContract.schema) do
       optional(:started_at).filled(:date_time)
-      optional(:status).filled(:string, included_in?: Statuses::Task::ALLOWED_FOR_CREATE)
+      required(:status).filled(:string, included_in?: Statuses::Task::ALLOWED_FOR_CREATE)
       optional(:deadline_at).filled(:date_time)
+      optional(:engagement_changes).hash(EngagementChanges::CreateContract.schema)
       optional(:schedule).hash do
         required(:scheduled_at).filled(:date_time)
-      end
-      optional(:engagement_changes).hash do
-        required(:value).filled(:integer)
       end
     end
 
@@ -42,24 +40,6 @@ module Tasks
     rule(:started_at, :schedule) do
       if values[:started_at] && values[:schedule]
         key.failure(I18n.t('errors.events.trackable.both_started_at_and_schedule_present'))
-      end
-    end
-
-    rule(:engagement_changes) do
-      if value && value[:value]
-        if value[:value] < TaskEngagementChange::MIN_CHANGE_VALUE
-          key.failure(
-            I18n.t('errors.events.engagementable.must_be_not_less_than',
-                   min_value: TaskEngagementChange::MIN_CHANGE_VALUE)
-          )
-        end
-
-        if value[:value] > TaskEngagementChange::MAX_CHANGE_VALUE
-          key.failure(
-            I18n.t('errors.events.engagementable.must_be_no_more_than',
-                   max_value: TaskEngagementChange::MAX_CHANGE_VALUE)
-          )
-        end
       end
     end
 

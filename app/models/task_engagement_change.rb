@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class TaskEngagementChange < ApplicationRecord
-  MIN_CHANGE_VALUE = 0
-  MAX_CHANGE_VALUE = 3
+  include EngagementChangeable
 
   belongs_to :engagement,
              class_name: 'TaskEngagement',

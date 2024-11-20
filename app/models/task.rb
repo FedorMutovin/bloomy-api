@@ -7,6 +7,4 @@ class Task < ApplicationRecord
 
   belongs_to :user
   has_one :engagement, class_name: 'TaskEngagement', dependent: :destroy
-
-  validates :status, inclusion: { in: Statuses::Task::ALLOWED_STATUSES }
 end

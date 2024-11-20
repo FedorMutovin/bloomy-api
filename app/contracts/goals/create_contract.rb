@@ -27,17 +27,17 @@ module Goals
 
     rule(:engagement_changes) do
       if value && value[:value]
-        if value[:value] < GoalEngagementChange::MIN_CHANGE_VALUE
+        if value[:value] < EngagementChangeable::MIN_CHANGE_VALUE
           key.failure(
             I18n.t('errors.events.engagementable.must_be_not_less_than',
-                   min_value: GoalEngagementChange::MIN_CHANGE_VALUE)
+                   min_value: EngagementChangeable::MIN_CHANGE_VALUE)
           )
         end
 
-        if value[:value] > GoalEngagementChange::MAX_CHANGE_VALUE
+        if value[:value] > EngagementChangeable::MAX_CHANGE_VALUE
           key.failure(
             I18n.t('errors.events.engagementable.must_be_no_more_than',
-                   max_value: GoalEngagementChange::MAX_CHANGE_VALUE)
+                   max_value: EngagementChangeable::MAX_CHANGE_VALUE)
           )
         end
       end

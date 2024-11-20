@@ -85,38 +85,6 @@ RSpec.describe Tasks::CreateContract do
     end
   end
 
-  context 'when rule(:engagement_changes)' do
-    it 'fails if engagement_changes.value is less than the minimum' do
-      result = contract.call(valid_params.merge(
-                               engagement_changes: { value: TaskEngagementChange::MIN_CHANGE_VALUE - 1 }
-                             ))
-      expect(result.errors[:engagement_changes]).to include(
-        I18n.t('errors.events.engagementable.must_be_not_less_than',
-               min_value: TaskEngagementChange::MIN_CHANGE_VALUE)
-      )
-    end
-
-    it 'fails if engagement_changes.value is more than the maximum' do
-      result = contract.call(valid_params.merge(engagement_changes: {
-                                                  value: TaskEngagementChange::MAX_CHANGE_VALUE + 1
-                                                }))
-      expect(result.errors[:engagement_changes]).to include(
-        I18n.t('errors.events.engagementable.must_be_no_more_than',
-               max_value: TaskEngagementChange::MAX_CHANGE_VALUE)
-      )
-    end
-
-    it 'is valid if engagement_changes.value is within the allowed range' do
-      result = contract.call(
-        valid_params
-          .merge(
-            engagement_changes: { value: TaskEngagementChange::MAX_CHANGE_VALUE }
-          )
-      )
-      expect(result).to be_success
-    end
-  end
-
   context 'when rule(:deadline_at)' do
     it 'fails if deadline_at is not in the future' do
       result = contract.call(valid_params.merge(deadline_at: DateTime.current - 1.hour))

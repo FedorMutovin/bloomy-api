@@ -45,11 +45,11 @@ RSpec.describe Goals::CreateContract do
   context 'when checking engagement_changes rules' do
     it 'fails if engagement_changes.value is less than the minimum' do
       result = contract.call(valid_params.merge(
-                               engagement_changes: { value: GoalEngagementChange::MIN_CHANGE_VALUE - 1 }
+                               engagement_changes: { value: EngagementChangeable::MIN_CHANGE_VALUE - 1 }
                              ))
       expect(result.errors[:engagement_changes]).to include(
         I18n.t('errors.events.engagementable.must_be_not_less_than',
-               min_value: GoalEngagementChange::MIN_CHANGE_VALUE)
+               min_value: EngagementChangeable::MIN_CHANGE_VALUE)
       )
     end
 

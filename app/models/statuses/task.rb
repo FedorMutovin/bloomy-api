@@ -15,7 +15,8 @@ module Statuses
 
     ALLOWED_FOR_CREATE = [
       Status::IN_PROGRESS,
-      Status::SCHEDULED
+      Status::SCHEDULED,
+      Status::PENDING
     ].freeze
   end
 end

@@ -8,11 +8,7 @@ module Travels
       required(:initiated_at).filled(:date_time)
       required(:start_at).filled(:date_time)
       required(:end_at).filled(:date_time)
-      optional(:trigger).hash do
-        required(:id).filled(:string)
-        required(:event_type).filled(:string)
-        required(:name).filled(:string)
-      end
+      optional(:trigger).hash(Triggers::CreateContract.schema)
     end
 
     rule(:end_at) do

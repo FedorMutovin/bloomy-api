@@ -7,9 +7,9 @@ RSpec.describe Triggers::CreateContract do
 
   let(:params) do
     {
-        id: 'trigger_id',
-        event_type: 'some_event_type',
-        name: 'Trigger name'
+      id: 'trigger_id',
+      event_type: 'some_event_type',
+      name: 'Trigger name'
     }
   end
 
@@ -17,8 +17,8 @@ RSpec.describe Triggers::CreateContract do
     context 'when trigger id is missing' do
       let(:params) do
         {
-            event_type: 'Event name',
-            name: 'Trigger Event'
+          event_type: 'Event name',
+          name: 'Trigger Event'
         }
       end
 
@@ -31,8 +31,8 @@ RSpec.describe Triggers::CreateContract do
     context 'when trigger event_type is missing' do
       let(:params) do
         {
-            id: 'b5192329-c1c5-4202-a715-5536785fbf59',
-            name: 'Trigger Event'
+          id: 'b5192329-c1c5-4202-a715-5536785fbf59',
+          name: 'Trigger Event'
         }
       end
 
@@ -45,8 +45,8 @@ RSpec.describe Triggers::CreateContract do
     context 'when trigger name is missing' do
       let(:params) do
         {
-            id: 'b5192329-c1c5-4202-a715-5536785fbf59',
-            event_type: 'Goal'
+          id: 'b5192329-c1c5-4202-a715-5536785fbf59',
+          event_type: 'Goal'
         }
       end
 

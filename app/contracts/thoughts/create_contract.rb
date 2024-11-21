@@ -5,11 +5,7 @@ module Thoughts
     params do
       required(:description).filled(:string)
       required(:initiated_at).filled(:date_time)
-      optional(:trigger).hash do
-        required(:id).filled(:string)
-        required(:event_type).filled(:string)
-        required(:name).filled(:string)
-      end
+      optional(:trigger).hash(Triggers::CreateContract.schema)
     end
   end
 end

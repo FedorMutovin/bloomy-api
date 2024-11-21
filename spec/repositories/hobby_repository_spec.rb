@@ -35,7 +35,7 @@ RSpec.describe HobbyRepository do
         initiated_at: Time.zone.now }
     end
 
-    it 'creates a decision' do
+    it 'creates a hobby' do
       expect { described_class.add(**params) }.to change(Hobby, :count).by(1)
     end
   end

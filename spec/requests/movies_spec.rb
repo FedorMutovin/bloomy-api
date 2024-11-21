@@ -1,0 +1,74 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe Api::V1::MoviesController do
+  describe 'GET /api/v1/movies' do
+    let(:user) { create(:user) }
+    let!(:movie) { create(:movie, user:) }
+
+    context 'when user exists' do
+      it 'returns movies for the user' do
+        get api_v1_movies_path(user_id: user.id)
+
+        expect(response).to have_http_status(:success)
+        json_response = response.parsed_body
+
+        expect(json_response).to be_an(Array)
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(movie.id)
+        expect(json_response.first['name']).to eq(movie.name)
+        expect(json_response.first['status']).to eq(movie.status)
+        expect(json_response.first['rating']).to eq(movie.rating)
+      end
+    end
+  end
+
+  describe 'POST /api/v1/movies' do
+    let!(:params) do
+      {
+        movie: {
+          name: 'movie name',
+          status: 'watched',
+          rating: 'interesting',
+          trigger: {
+            id: 'trigger_id',
+            event_type: 'some_event_type',
+            name: 'Trigger name'
+          }
+        }
+      }
+    end
+
+    let(:movie) do
+      build_stubbed(
+        :movie,
+        name: params[:movie][:name],
+        status: params[:movie][:status],
+        rating: params[:movie][:rating]
+      )
+    end
+
+    let(:stubbed_create_service) { instance_double(Movies::Create) }
+
+    before do
+      create(:user)
+      allow(Movies::Create).to receive(:new).and_return(stubbed_create_service)
+      allow(stubbed_create_service).to receive(:call).and_return(movie)
+    end
+
+    context 'with valid params' do
+      it 'creates a movie for the user' do
+        post(api_v1_movies_path, params:)
+
+        expect(response).to have_http_status(:success)
+        json_response = response.parsed_body
+
+        expect(json_response).to be_a(Hash)
+        expect(json_response['name']).to eq(params[:movie][:name])
+        expect(json_response['status']).to eq(params[:movie][:status])
+        expect(json_response['rating']).to eq(params[:movie][:rating])
+      end
+    end
+  end
+end

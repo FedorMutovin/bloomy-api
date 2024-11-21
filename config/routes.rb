@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       resources :schedules, only: [:index]
       resources :travels, only: %i[index create]
       resources :decisions, only: %i[index create]
+      resources :movies, only: %i[index create]
       resources :hobbies, only: %i[index create]
       resources :works, only: [:index]
       resources :goals, only: %i[index show create]

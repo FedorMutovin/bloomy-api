@@ -20,7 +20,8 @@ module Movies
         user_id: params[:user_id],
         name: params[:name],
         status: params[:status],
-        rating: params[:rating]
+        rating: params[:rating],
+        completed_at: params[:completed_at]
       )
     end
 

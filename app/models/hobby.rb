@@ -5,7 +5,6 @@ class Hobby < ApplicationRecord
   MIN_LEVEL = 4
   MAX_ENGAGEMENT_LEVEL = 0
   MIN_ENGAGEMENT_LEVEL = 4
-  self.primary_key = :id
 
   include Relatable
   belongs_to :user

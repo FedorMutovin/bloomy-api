@@ -11,7 +11,8 @@ RSpec.describe Movies::Create, type: :service do
       user_id: user.id,
       name: 'movie name',
       status: 'watched',
-      rating: 'interesting'
+      rating: 'interesting',
+      completed_at: DateTime.current
     }
   end
 
@@ -19,7 +20,7 @@ RSpec.describe Movies::Create, type: :service do
 
   describe '#call' do
     context 'when creating a movie' do
-      it 'creates a new hobby with the specified attributes' do
+      it 'creates a new movie with the specified attributes' do
         allow(MovieRepository).to receive(:add)
         service_call
         expect(MovieRepository).to have_received(:add).with(attributes)
@@ -32,7 +33,8 @@ RSpec.describe Movies::Create, type: :service do
       end
       let(:params) { attributes.merge(trigger_params) }
       let(:movie) do
-        build_stubbed(:movie, user:, name: 'movie name', status: 'watched', rating: 'interesting')
+        build_stubbed(:movie, user:, name: 'movie name', status: 'watched', rating: 'interesting',
+                      completed_at: DateTime.current)
       end
 
       it 'adds an event relationship if trigger is present' do

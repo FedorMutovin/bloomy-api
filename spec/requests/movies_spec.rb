@@ -20,6 +20,7 @@ RSpec.describe Api::V1::MoviesController do
         expect(json_response.first['name']).to eq(movie.name)
         expect(json_response.first['status']).to eq(movie.status)
         expect(json_response.first['rating']).to eq(movie.rating)
+        expect(json_response.first['completed_at']).to eq(movie.completed_at)
       end
     end
   end
@@ -31,6 +32,7 @@ RSpec.describe Api::V1::MoviesController do
           name: 'movie name',
           status: 'watched',
           rating: 'interesting',
+          completed_at: '2024-11-11T17:03:32Z',
           trigger: {
             id: 'trigger_id',
             event_type: 'some_event_type',
@@ -45,7 +47,8 @@ RSpec.describe Api::V1::MoviesController do
         :movie,
         name: params[:movie][:name],
         status: params[:movie][:status],
-        rating: params[:movie][:rating]
+        rating: params[:movie][:rating],
+        completed_at: params[:movie][:completed_at]
       )
     end
 
@@ -68,6 +71,7 @@ RSpec.describe Api::V1::MoviesController do
         expect(json_response['name']).to eq(params[:movie][:name])
         expect(json_response['status']).to eq(params[:movie][:status])
         expect(json_response['rating']).to eq(params[:movie][:rating])
+        expect(json_response['completed_at']).to eq(params[:movie][:completed_at])
       end
     end
   end

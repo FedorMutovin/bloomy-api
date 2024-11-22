@@ -35,8 +35,8 @@ RSpec.describe Movies::CreateContract do
 
   context 'when checking completed_at rules' do
     it 'fails if completed_at is blank when status is watched' do
-      result = contract.call(params.merge(status: 'watched', completed_at: nil))
-      expect(result.errors[:completed_at]).to include(I18n.t('errors.events.trackable.completed_at_required_when_watched'))
+      result = contract.call(params.merge(status: Statuses::Movie::ALLOWED_STATUSES[0], completed_at: nil))
+      expect(result.errors[:completed_at]).to include(I18n.t('errors.events.trackable.completed_at_required'))
     end
   end
 end

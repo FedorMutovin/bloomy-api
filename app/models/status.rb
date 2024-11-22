@@ -7,4 +7,6 @@ class Status
   CANCELED = 'canceled'
   POSTPONED = 'postponed'
   SCHEDULED = 'scheduled'
+  WATCHED = 'watched'
+  WAITING = 'waiting'
 end

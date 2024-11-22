@@ -5,7 +5,7 @@ en:
         must_be_not_less_than: "Engagement change should be no less than %{min_value}"
         must_be_no_more_than: "Engagement change should be no more than %{max_value}"
       trackable:
-        completed_at_required_when_watched: "must be filled"
+        completed_at_required: "must be filled"
         deadline_at_must_be_in_the_future: "Deadline date time must be more than the current time."
         deadline_at_must_be_more_than_scheduled_at: "Deadline date time must be more than the scheduled time."
         start_date_time_in_future: "Start date time must be less than the current time."

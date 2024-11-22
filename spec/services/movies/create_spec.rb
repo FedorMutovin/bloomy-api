@@ -34,7 +34,7 @@ RSpec.describe Movies::Create, type: :service do
       let(:params) { attributes.merge(trigger_params) }
       let(:movie) do
         build_stubbed(:movie, user:, name: 'movie name', status: 'watched', rating: 'interesting',
-                      completed_at: DateTime.current)
+                              completed_at: DateTime.current)
       end
 
       it 'adds an event relationship if trigger is present' do

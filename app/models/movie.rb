@@ -7,6 +7,5 @@ class Movie < ApplicationRecord
 
   belongs_to :user
   validates :name, :status, presence: true
-  validates :status, inclusion: { in: Statuses::Movie::ALLOWED_STATUSES }
   validates :rating, inclusion: { in: ALLOWED_RATINGS, allow_nil: true }
 end

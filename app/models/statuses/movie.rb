@@ -2,9 +2,12 @@
 
 module Statuses
   class Movie
+    WATCHED = 'watched'
+    WAITING = 'waiting'
+
     ALLOWED_STATUSES = [
-      Status::WATCHED,
-      Status::WAITING
+      WATCHED,
+      WAITING
     ].freeze
   end
 end

@@ -11,7 +11,7 @@ module Movies
     end
 
     rule(:completed_at) do
-      if values[:status] == Statuses::Movie::ALLOWED_STATUSES[0] && values[:completed_at].blank?
+      if values[:status] == Statuses::Movie::WATCHED && values[:completed_at].blank?
         key.failure(I18n.t('errors.events.trackable.completed_at_required'))
       end
     end

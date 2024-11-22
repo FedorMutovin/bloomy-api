@@ -7,7 +7,7 @@ RSpec.describe EngagementChanges::CreateContract do
 
   let(:params) do
     {
-      value: 0,
+      value: 0
     }
   end
 

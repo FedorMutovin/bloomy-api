@@ -8,4 +8,8 @@ class TaskRepository
   def self.add(**params)
     Task.create!(**params)
   end
+
+  def self.by_id(id:)
+    Task.find(id)
+  end
 end

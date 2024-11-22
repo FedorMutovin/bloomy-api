@@ -50,4 +50,13 @@ RSpec.describe TaskRepository do
       expect { described_class.add(**params) }.to change(Task, :count).by(1)
     end
   end
+
+  describe '.by_id(id:)' do
+    let(:user) { create(:user) }
+    let!(:task) { create(:task, user:) }
+
+    it 'returns only task for the specified id' do
+      expect(described_class.by_id(id: task.id)).to eq task
+    end
+  end
 end

@@ -52,7 +52,8 @@ RSpec.describe Api::V1::GoalsController do
       end
     end
 
-    context 'when user does not exist' do
+    context 'when goal does not exist' do
+      let(:user) { create(:user) }
       let(:goal_id) { '231' }
 
       it 'returns not found' do

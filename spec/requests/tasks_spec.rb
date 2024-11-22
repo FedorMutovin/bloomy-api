@@ -89,4 +89,39 @@ RSpec.describe Api::V1::TasksController do
       end
     end
   end
+
+  describe 'GET /api/v1/tasks/:id' do
+    let(:user) { create(:user) }
+    let(:task) { create(:task, user:, status: 'pending', started_at: DateTime.current) }
+    let!(:task_engagement) { create(:task_engagement, value: 1, task:) }
+
+    context 'when task exists' do
+      it 'returns task for the user with associations' do
+        get api_v1_task_path(id: task.id)
+
+        expect(response).to have_http_status(:success)
+        json_response = response.parsed_body
+        expect(json_response).to be_an(Hash)
+        expect(json_response['id']).to eq(task.id)
+        expect(json_response['name']).to eq(task.name)
+        expect(json_response['initiated_at']).to eq(task.initiated_at.iso8601)
+        expect(json_response['status']).to eq(task.status)
+        expect(json_response['closed_at']).to eq(task.closed_at)
+        expect(json_response['started_at']).to eq(task.started_at.iso8601)
+        expect(json_response['priority']).to eq(task.priority)
+        expect(json_response['engagement']).to eq(task_engagement.value)
+      end
+    end
+
+    context 'when task does not exist' do
+      let(:user) { create(:user) }
+      let(:task_id) { '231' }
+
+      it 'returns not found' do
+        get api_v1_task_path(id: task_id)
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end

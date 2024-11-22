@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       resources :works, only: [:index]
       resources :goals, only: %i[index show create]
       resources :wishes, only: %i[index create show]
-      resources :tasks, only: %i[index create]
+      resources :tasks, only: %i[index create show]
       resources :actions, only: %i[index create]
       resources :events, only: [:index]
       resources :thoughts, only: %i[index create]

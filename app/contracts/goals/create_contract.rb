@@ -4,6 +4,7 @@ module Goals
   class CreateContract < ApplicationContract
     params(Events::CreateContract.schema) do
       optional(:started_at).filled(:date_time)
+      optional(:deadline_at).filled(:date_time)
       optional(:status).filled(:string, included_in?: Statuses::Goal::ALLOWED_FOR_CREATE)
       optional(:engagement_changes).hash do
         required(:value).filled(:integer)
@@ -40,6 +41,12 @@ module Goals
                    max_value: EngagementChangeable::MAX_CHANGE_VALUE)
           )
         end
+      end
+    end
+
+    rule(:deadline_at) do
+      if key? && value < DateTime.current
+        key.failure(I18n.t('errors.events.trackable.deadline_at_must_be_in_the_future'))
       end
     end
   end

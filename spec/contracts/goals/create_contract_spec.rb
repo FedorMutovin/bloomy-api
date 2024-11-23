@@ -73,4 +73,12 @@ RSpec.describe Goals::CreateContract do
       expect(result).to be_success
     end
   end
+
+  context 'when rule(:deadline_at)' do
+    it 'fails if deadline_at is not in the future' do
+      result = contract.call(valid_params.merge(deadline_at: DateTime.current - 1.hour))
+      expect(result.errors[:deadline_at])
+        .to include(I18n.t('errors.events.trackable.deadline_at_must_be_in_the_future'))
+    end
+  end
 end

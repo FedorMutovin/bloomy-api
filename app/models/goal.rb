@@ -3,6 +3,7 @@
 class Goal < ApplicationRecord
   include Relatable
   include Reflectable
+  include Unitable
 
   belongs_to :user
   has_one :engagement, class_name: 'GoalEngagement', dependent: :destroy

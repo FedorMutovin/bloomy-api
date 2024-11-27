@@ -14,6 +14,7 @@ class User < ApplicationRecord
   has_many :movies, dependent: :destroy
   has_many :independent_events, dependent: :destroy
   has_many :works, dependent: :destroy
+  has_many :roots_unites, class_name: 'Roots::Unite', dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :password_digest, presence: true

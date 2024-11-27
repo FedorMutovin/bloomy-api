@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       resources :thoughts, only: %i[index create]
       resources :everyday_quotes, only: [:index]
       get 'users/current', to: 'users#current'
+      post 'roots/unite', to: 'roots#unite'
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_23_162603) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_25_184627) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -185,6 +185,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_23_162603) do
     t.index ["user_id"], name: "index_movies_on_user_id"
   end
 
+  create_table "root_unites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "source_type", null: false
+    t.uuid "source_id", null: false
+    t.string "target_type", null: false
+    t.uuid "target_id", null: false
+    t.text "reason", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source_type", "source_id"], name: "index_root_unites_on_source"
+    t.index ["target_type", "target_id"], name: "index_root_unites_on_target"
+    t.index ["user_id"], name: "index_root_unites_on_user_id"
+  end
+
   create_table "task_engagement_changes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "task_engagement_id", null: false
     t.integer "last_value", null: false
@@ -327,6 +341,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_23_162603) do
   add_foreign_key "independent_events", "users"
   add_foreign_key "interests", "users"
   add_foreign_key "movies", "users"
+  add_foreign_key "root_unites", "users"
   add_foreign_key "task_engagement_changes", "task_engagements"
   add_foreign_key "task_engagements", "tasks"
   add_foreign_key "tasks", "users"

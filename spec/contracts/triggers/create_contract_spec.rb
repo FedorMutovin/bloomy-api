@@ -8,8 +8,7 @@ RSpec.describe Triggers::CreateContract do
   let(:params) do
     {
       id: 'trigger_id',
-      event_type: 'some_event_type',
-      name: 'Trigger name'
+      event_type: 'some_event_type'
     }
   end
 
@@ -17,8 +16,7 @@ RSpec.describe Triggers::CreateContract do
     context 'when trigger id is missing' do
       let(:params) do
         {
-          event_type: 'Event name',
-          name: 'Trigger Event'
+          event_type: 'Event name'
         }
       end
 
@@ -31,28 +29,13 @@ RSpec.describe Triggers::CreateContract do
     context 'when trigger event_type is missing' do
       let(:params) do
         {
-          id: 'b5192329-c1c5-4202-a715-5536785fbf59',
-          name: 'Trigger Event'
+          id: 'b5192329-c1c5-4202-a715-5536785fbf59'
         }
       end
 
       it 'fails' do
         result = contract.call(params.except(:event_type))
         expect(result.errors[:event_type]).to include('is missing')
-      end
-    end
-
-    context 'when trigger name is missing' do
-      let(:params) do
-        {
-          id: 'b5192329-c1c5-4202-a715-5536785fbf59',
-          event_type: 'Goal'
-        }
-      end
-
-      it 'fails' do
-        result = contract.call(params.except(:name))
-        expect(result.errors[:name]).to include('is missing')
       end
     end
   end

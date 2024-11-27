@@ -13,16 +13,14 @@ class TaskRepository
     Task.find(id)
   end
 
-  def self.unpostpone_tasks
-    time_threshold = DateTime.current + 5.minutes
-    tasks_to_unpostpone = Task.where(postponed_until: ..time_threshold)
+  def self.postponed_tasks(time)
+    task_ids = Task.where(postponed_until: ..time).pluck(:id)
+    Task.where(id: task_ids)
+  end
 
-    tasks_to_unpostpone.each do |task|
-      task.update(
-        postponed_until: nil,
-        postponed_at: nil,
-        status: Status::PENDING
-      )
+  def self.update_tasks(tasks, params)
+    tasks.each do |task|
+      task.update(params)
     end
   end
 end

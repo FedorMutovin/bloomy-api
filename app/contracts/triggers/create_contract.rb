@@ -5,7 +5,6 @@ module Triggers
     params do
       required(:id).filled(:string)
       required(:event_type).filled(:string)
-      required(:name).filled(:string)
     end
   end
 end

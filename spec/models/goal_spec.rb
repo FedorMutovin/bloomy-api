@@ -13,4 +13,5 @@ RSpec.describe Goal do
   it { is_expected.to validate_numericality_of(:priority).is_less_than_or_equal_to(4) }
 
   it_behaves_like 'relatable'
+  it_behaves_like 'unitable'
 end

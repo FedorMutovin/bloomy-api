@@ -1,5 +1,9 @@
 en:
   errors:
+    roots:
+      unite:
+        rule_type_can_not_be_different: "Rule types cannot be different"
+        root_can_not_be_same: "Root to unite and root to keep must be different"
     events:
       engagementable:
         must_be_not_less_than: "Engagement change should be no less than %{min_value}"

@@ -13,14 +13,11 @@ class TaskRepository
     Task.find(id)
   end
 
-  def self.postponed_tasks(time)
-    task_ids = Task.where(postponed_until: ..time).pluck(:id)
-    Task.where(id: task_ids)
+  def self.ready_to_postpone
+    Task.where(postponed_until: ..DateTime.current).to_a
   end
 
-  def self.update_tasks(tasks, params)
-    tasks.each do |task|
-      task.update(params)
-    end
+  def self.update(task, params)
+    task.update(params)
   end
 end

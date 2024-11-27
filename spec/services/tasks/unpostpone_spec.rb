@@ -16,7 +16,7 @@ RSpec.describe Tasks::Unpostpone do
   end
 
   before do
-    allow(TaskRepository).to receive(:ready_to_postpone).and_return([postponed_task])
+    allow(TaskRepository).to receive(:ready_to_unpostpone).and_return([postponed_task])
     allow(TaskRepository).to receive(:update).with(postponed_task, default_params)
   end
 
@@ -24,7 +24,7 @@ RSpec.describe Tasks::Unpostpone do
     it 'sets default params correctly' do
       service.call
 
-      expect(TaskRepository).to have_received(:ready_to_postpone)
+      expect(TaskRepository).to have_received(:ready_to_unpostpone)
       expect(TaskRepository).to have_received(:update).with(postponed_task, default_params)
     end
   end

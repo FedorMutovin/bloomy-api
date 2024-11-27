@@ -60,13 +60,13 @@ RSpec.describe TaskRepository do
     end
   end
 
-  describe '.ready_to_postpone' do
+  describe '.ready_to_unpostpone' do
     let(:user) { create(:user) }
     let!(:active_task) { create(:task, user:, postponed_until: 1.day.ago) }
 
-    it 'returns tasks postponed until the specified time' do
-      result = described_class.ready_to_postpone
-      expect(result).to eq([active_task])
+    it 'returns tasks postponed until the current time' do
+      result = described_class.ready_to_unpostpone
+      expect(result).to contain_exactly(active_task)
     end
   end
 

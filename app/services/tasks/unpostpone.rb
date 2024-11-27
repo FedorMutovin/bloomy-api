@@ -15,7 +15,7 @@ module Tasks
     private
 
     def unpostponed
-      tasks = TaskRepository.ready_to_postpone
+      tasks = TaskRepository.ready_to_unpostpone
       tasks.each do |task|
         TaskRepository.update(task, DEFAULT_PARAMS)
       end

@@ -13,7 +13,7 @@ class TaskRepository
     Task.find(id)
   end
 
-  def self.ready_to_postpone
+  def self.ready_to_unpostpone
     Task.where(postponed_until: ..DateTime.current).to_a
   end
 

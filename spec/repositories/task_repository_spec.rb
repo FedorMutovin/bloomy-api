@@ -60,17 +60,17 @@ RSpec.describe TaskRepository do
     end
   end
 
-  describe '.postponed_tasks(time)' do
+  describe '.ready_to_postpone' do
     let(:user) { create(:user) }
     let!(:active_task) { create(:task, user:, postponed_until: 1.day.ago) }
 
     it 'returns tasks postponed until the specified time' do
-      result = described_class.postponed_tasks(Time.zone.now)
+      result = described_class.ready_to_postpone
       expect(result).to eq([active_task])
     end
   end
 
-  describe '.update_tasks(tasks, params)' do
+  describe '.update(task, params)' do
     let(:user) { create(:user) }
     let!(:postponed_task) do
       create(:task, user:, postponed_at: 1.day.ago, postponed_until: 1.day.ago, status: Status::IN_PROGRESS)
@@ -80,11 +80,16 @@ RSpec.describe TaskRepository do
       { postponed_at: nil, postponed_until: nil, status: Status::PENDING }
     end
 
-    it 'updates the given tasks with new parameters' do
-      described_class.update_tasks([postponed_task], params)
-      expect(postponed_task.reload.postponed_at).to be_nil
-      expect(postponed_task.reload.postponed_until).to be_nil
-      expect(postponed_task.reload.status).to eq(Status::PENDING)
+    it 'updates the given task with new parameters' do
+      original_postponed_at = postponed_task.postponed_at
+      original_postponed_until = postponed_task.postponed_until
+      original_status = postponed_task.status
+
+      described_class.update(postponed_task, params)
+
+      expect(postponed_task.postponed_at).not_to eq(original_postponed_at)
+      expect(postponed_task.postponed_until).not_to eq(original_postponed_until)
+      expect(postponed_task.status).not_to eq(original_status)
     end
   end
 end

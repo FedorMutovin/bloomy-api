@@ -15,12 +15,10 @@ module Tasks
     private
 
     def unpostponed
-      tasks = TaskRepository.postponed_tasks(postponed_time)
-      TaskRepository.update_tasks(tasks, DEFAULT_PARAMS)
-    end
-
-    def postponed_time
-      DateTime.current + 5.minutes
+      tasks = TaskRepository.ready_to_postpone
+      tasks.each do |task|
+        TaskRepository.update(task, DEFAULT_PARAMS)
+      end
     end
   end
 end

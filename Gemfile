@@ -20,7 +20,7 @@ gem 'puma', '>= 5.0'
 gem 'panko_serializer'
 
 # For using open struct after ruby 3.3.5
-gem 'ostruct', '~> 0.6.0'
+gem 'ostruct', '~> 0.6.1'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem 'rack-cors'

@@ -113,5 +113,28 @@ RSpec.describe Tasks::Create, type: :service do
         )
       end
     end
+
+    context 'when trigger event type is "Wish"' do
+      let(:wish) do
+        build_stubbed(:wish, user:, name: 'wish name', description: 'wish description', initiated_at: Time.zone.now)
+      end
+      let(:trigger_params) do
+        { trigger: { id: wish.id, event_type: 'Wish' } }
+      end
+      let(:params) { attributes.merge(trigger_params) }
+      let(:task) { build_stubbed(:task, user:, name: 'Test Task', description: 'Task description') }
+
+      it 'activates a wish if the event type is "Wish"' do
+        allow(TaskRepository).to receive(:add).and_return(task)
+        allow(Events::RelationshipRepository).to receive(:add)
+        allow(WishRepository).to receive(:update).with(wish.id, activated_at: DateTime.current)
+
+        service_call
+
+        expect(TaskRepository).to have_received(:add)
+        expect(Events::RelationshipRepository).to have_received(:add)
+        expect(WishRepository).to have_received(:update).with(wish.id, activated_at: DateTime.current)
+      end
+    end
   end
 end

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::RootsController do
   describe 'POST /api/v1/roots/unite' do
-    let(:user) { create(:user)}
+    let(:user) { create(:user) }
     let(:target) { build_stubbed(:goal, user:) }
     let(:source) { build_stubbed(:goal, user:) }
 
@@ -31,7 +31,7 @@ RSpec.describe Api::V1::RootsController do
         target_id: params[:roots_unite][:target][:id],
         target_type: params[:roots_unite][:target][:event_type],
         source_id: params[:roots_unite][:source][:id],
-        source_type: params[:roots_unite][:source][:event_type],
+        source_type: params[:roots_unite][:source][:event_type]
       )
     end
 

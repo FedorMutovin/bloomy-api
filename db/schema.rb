@@ -252,8 +252,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_184627) do
     t.datetime "updated_at", null: false
     t.uuid "vacation_id"
     t.datetime "initiated_at", null: false
-    t.datetime "start_at"
-    t.datetime "end_at"
+    t.datetime "start_at", null: false
+    t.datetime "end_at", null: false
     t.index ["user_id"], name: "index_travels_on_user_id"
     t.index ["vacation_id"], name: "index_travels_on_vacation_id"
   end
@@ -347,6 +347,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_184627) do
   add_foreign_key "tasks", "users"
   add_foreign_key "thoughts", "users"
   add_foreign_key "travels", "users"
+  add_foreign_key "travels", "vacations"
   add_foreign_key "vacations", "users"
   add_foreign_key "wishes", "users"
   add_foreign_key "work_load_changes", "work_loads"

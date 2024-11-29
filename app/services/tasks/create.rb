@@ -10,6 +10,7 @@ module Tasks
         add_event_relationship if params[:trigger].present?
         add_schedule if params[:schedule].present?
         add_engagement_change if params[:engagement_changes].present?
+        activate_wish if params[:trigger].present? && params[:trigger][:event_type] == 'Wish'
       end
 
       @task
@@ -50,6 +51,10 @@ module Tasks
 
     def add_engagement_change
       TaskEngagementRepository.add(task_id: @task.id, value: params[:engagement_changes][:value])
+    end
+
+    def activate_wish
+      WishRepository.update(params[:trigger][:id], activated_at: DateTime.current)
     end
   end
 end

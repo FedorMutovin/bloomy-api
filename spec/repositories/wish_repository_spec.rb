@@ -43,4 +43,25 @@ RSpec.describe WishRepository do
       expect(described_class.by_id(id: wish.id)).to eq wish
     end
   end
+
+  describe '.update(wish)' do
+    let(:user) { create(:user) }
+    let!(:active_wish) do
+      create(:wish, user:, name: 'wish name', description: 'wish description', initiated_at: Time.zone.now)
+    end
+
+    let(:params) do
+      { activated_at: DateTime.current }
+    end
+
+    it 'updates the given task with new parameters' do
+      original_activated_at = active_wish.activated_at
+
+      described_class.update(active_wish.id, **params)
+
+      active_wish.reload
+
+      expect(active_wish.activated_at).not_to eq(original_activated_at)
+    end
+  end
 end

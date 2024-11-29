@@ -12,4 +12,8 @@ class WishRepository
   def self.by_id(id:)
     Wish.find(id)
   end
+
+  def self.update(id, **params)
+    Wish.find(id).update!(**params)
+  end
 end

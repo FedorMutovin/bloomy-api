@@ -26,7 +26,7 @@ gem 'ostruct', '~> 0.6.0'
 gem 'rack-cors'
 
 # Version control for specific db tables changes
-gem 'paper_trail', '~> 15.2.0'
+gem 'paper_trail', '~> 16.0.0'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"

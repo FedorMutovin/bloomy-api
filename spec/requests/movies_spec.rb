@@ -35,10 +35,10 @@ RSpec.describe Api::V1::MoviesController do
           rating: 'interesting',
           completed_at: '2024-11-11T17:03:32Z',
           initiated_at: '2024-11-10T17:03:32Z',
-          trigger: {
-            id: 'trigger_id',
-            event_type: 'some_event_type',
-            name: 'Trigger name'
+          origin_root: {
+            id: 'root_id',
+            root_type: 'some_root_type',
+            name: 'Root name'
           }
         }
       }

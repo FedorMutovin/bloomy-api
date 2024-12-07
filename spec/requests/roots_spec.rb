@@ -21,9 +21,9 @@ RSpec.describe Api::V1::RootsController do
       expect(json_response).to be_an(Array)
       expect(json_response.count).to eq(3)
 
-      expect(json_response[2]['event_type']).to eq('Goal')
-      expect(json_response[1]['event_type']).to eq('Task')
-      expect(json_response[0]['event_type']).to eq('Travel')
+      expect(json_response[2]['root_type']).to eq('Goal')
+      expect(json_response[1]['root_type']).to eq('Task')
+      expect(json_response[0]['root_type']).to eq('Travel')
     end
   end
 
@@ -37,11 +37,11 @@ RSpec.describe Api::V1::RootsController do
         roots_unite: {
           reason: 'reason',
           target: {
-            event_type: target.class.name,
+            root_type: target.class.name,
             id: target.id
           },
           source: {
-            event_type: source.class.name,
+            root_type: source.class.name,
             id: source.id
           }
         }
@@ -53,9 +53,9 @@ RSpec.describe Api::V1::RootsController do
         :root_unite,
         reason: params[:roots_unite][:reason],
         target_id: params[:roots_unite][:target][:id],
-        target_type: params[:roots_unite][:target][:event_type],
+        target_type: params[:roots_unite][:target][:root_type],
         source_id: params[:roots_unite][:source][:id],
-        source_type: params[:roots_unite][:source][:event_type]
+        source_type: params[:roots_unite][:source][:root_type]
       )
     end
 
@@ -77,9 +77,9 @@ RSpec.describe Api::V1::RootsController do
         expect(json_response).to be_a(Hash)
         expect(json_response['reason']).to eq(params[:roots_unite][:reason])
         expect(json_response['target_id']).to eq(params[:roots_unite][:target][:id])
-        expect(json_response['target_type']).to eq(params[:roots_unite][:target][:event_type])
+        expect(json_response['target_type']).to eq(params[:roots_unite][:target][:root_type])
         expect(json_response['source_id']).to eq(params[:roots_unite][:source][:id])
-        expect(json_response['source_type']).to eq(params[:roots_unite][:source][:event_type])
+        expect(json_response['source_type']).to eq(params[:roots_unite][:source][:root_type])
       end
     end
   end

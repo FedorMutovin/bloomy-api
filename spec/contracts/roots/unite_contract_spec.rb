@@ -15,11 +15,11 @@ RSpec.describe Roots::UniteContract do
       reason: 'Event Name',
       target: {
         id: target_id,
-        event_type: target_type
+        root_type: target_type
       },
       source: {
         id: source_id,
-        event_type: source_type
+        root_type: source_type
       }
     }
   end

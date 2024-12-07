@@ -9,7 +9,7 @@ module Roots
     end
 
     rule(:source, :target) do
-      if values[:source][:event_type] != values[:target][:event_type]
+      if values[:source][:root_type] != values[:target][:root_type]
         base.failure(I18n.t('errors.roots.unite.rule_type_can_not_be_different'))
       elsif values[:source][:id] == values[:target][:id]
         base.failure(I18n.t('errors.roots.unite.root_can_not_be_same'))

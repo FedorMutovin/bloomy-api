@@ -9,9 +9,10 @@ module Roots
 
     def call
       ActiveRecord::Base.transaction do
-        unite_roots!
+        @unite = unite_roots!
         update_source_root_status
       end
+      @unite
     end
 
     private
@@ -19,9 +20,9 @@ module Roots
     def unite_roots!
       Roots::UniteRepository.unite(
         source_id: params[:source][:id],
-        source_type: params[:source][:event_type],
+        source_type: params[:source][:root_type],
         target_id: params[:target][:id],
-        target_type: params[:target][:event_type],
+        target_type: params[:target][:root_type],
         user_id: params[:user_id],
         reason: params[:reason]
       )
@@ -32,7 +33,7 @@ module Roots
     end
 
     def source_repository
-      "#{params[:source][:event_type]}Repository".constantize
+      "#{params[:source][:root_type]}Repository".constantize
     end
   end
 end

@@ -30,7 +30,12 @@ module Api
       def current_user
         # @user ||= UserRepository.by_id(id: params[:user_id])
         # TODO: add session
-        User.first
+        if Rails.env.test?
+          User.first
+        else
+          # User.find('4ca58434-1ff2-4b8b-9691-b08e514a0e92') # I'M
+          User.find('306c2078-ac7f-4ae6-9936-dac91e684a30') # TEST BRO
+        end
       end
     end
   end

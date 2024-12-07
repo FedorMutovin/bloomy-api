@@ -9,25 +9,25 @@ RSpec.describe Roots::UniteService, type: :service do
   let(:source_id) { 'source-id' }
   let(:target_id) { 'target-id' }
   let(:reason) { 'Some reason' }
-  let(:source_event_type) { 'Goal' }
-  let(:target_event_type) { 'Task' }
+  let(:source_root_type) { 'Goal' }
+  let(:target_root_type) { 'Task' }
 
   let(:params) do
     {
       user_id:,
-      source: { id: source_id, event_type: source_event_type },
-      target: { id: target_id, event_type: target_event_type },
+      source: { id: source_id, root_type: source_root_type },
+      target: { id: target_id, root_type: target_root_type },
       reason:
     }
   end
 
   # Mocks for repositories
   let(:unite_repository) { class_double(Roots::UniteRepository) }
-  let(:source_repository_class) { class_double("#{source_event_type}Repository") }
+  let(:source_repository_class) { class_double("#{source_root_type}Repository") }
 
   before do
     stub_const('Roots::UniteRepository', unite_repository)
-    stub_const("#{source_event_type}Repository", source_repository_class)
+    stub_const("#{source_root_type}Repository", source_repository_class)
 
     allow(unite_repository).to receive(:unite)
     allow(source_repository_class).to receive(:update)
@@ -42,9 +42,9 @@ RSpec.describe Roots::UniteService, type: :service do
       expect(ActiveRecord::Base).to have_received(:transaction)
       expect(unite_repository).to have_received(:unite).with(
         source_id:,
-        source_type: source_event_type,
+        source_type: source_root_type,
         target_id:,
-        target_type: target_event_type,
+        target_type: target_root_type,
         user_id:,
         reason:
       )
@@ -55,7 +55,7 @@ RSpec.describe Roots::UniteService, type: :service do
       )
     end
 
-    it 'determines the source repository based on event_type' do
+    it 'determines the source repository based on root_type' do
       service_call
 
       expect(source_repository_class).to have_received(:update)
@@ -74,18 +74,18 @@ RSpec.describe Roots::UniteService, type: :service do
     end
   end
 
-  context 'with different source event types' do
-    RootRepository.available_types.each do |event_type|
-      context "when source event_type is #{event_type}" do
-        let(:source_event_type) { event_type }
-        let(:source_repository_class) { class_double("#{event_type}Repository") }
+  context 'with different source root types' do
+    RootRepository.available_types.each do |root_type|
+      context "when source root_type is #{root_type}" do
+        let(:source_root_type) { root_type }
+        let(:source_repository_class) { class_double("#{root_type}Repository") }
 
         before do
-          stub_const("#{event_type}Repository", source_repository_class)
+          stub_const("#{root_type}Repository", source_repository_class)
           allow(source_repository_class).to receive(:update)
         end
 
-        it "uses #{event_type}Repository to update the source root status" do
+        it "uses #{root_type}Repository to update the source root status" do
           service_call
 
           expect(source_repository_class).to have_received(:update).with(

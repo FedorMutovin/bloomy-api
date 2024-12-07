@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_28_235301) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_07_170443) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -359,98 +359,98 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_28_235301) do
 
   create_view "roots", sql_definition: <<-SQL
       SELECT tasks.id,
-      'Task'::text AS event_type,
+      'Task'::text AS root_type,
       tasks.name,
       tasks.initiated_at,
       tasks.user_id
      FROM tasks
   UNION ALL
    SELECT wishes.id,
-      'Wish'::text AS event_type,
+      'Wish'::text AS root_type,
       wishes.name,
       wishes.initiated_at,
       wishes.user_id
      FROM wishes
   UNION ALL
    SELECT thoughts.id,
-      'Thought'::text AS event_type,
+      'Thought'::text AS root_type,
       thoughts.description AS name,
       thoughts.initiated_at,
       thoughts.user_id
      FROM thoughts
   UNION ALL
    SELECT actions.id,
-      'Action'::text AS event_type,
+      'Action'::text AS root_type,
       actions.name,
       actions.initiated_at,
       actions.user_id
      FROM actions
   UNION ALL
    SELECT goals.id,
-      'Goal'::text AS event_type,
+      'Goal'::text AS root_type,
       goals.name,
       goals.initiated_at,
       goals.user_id
      FROM goals
   UNION ALL
    SELECT decisions.id,
-      'Decision'::text AS event_type,
+      'Decision'::text AS root_type,
       decisions.name,
       decisions.initiated_at,
       decisions.user_id
      FROM decisions
   UNION ALL
    SELECT activities.id,
-      'Activity'::text AS event_type,
+      'Activity'::text AS root_type,
       activities.name,
       activities.initiated_at,
       activities.user_id
      FROM activities
   UNION ALL
    SELECT hobbies.id,
-      'Hobby'::text AS event_type,
+      'Hobby'::text AS root_type,
       hobbies.name,
       hobbies.initiated_at,
       hobbies.user_id
      FROM hobbies
   UNION ALL
    SELECT travels.id,
-      'Travel'::text AS event_type,
+      'Travel'::text AS root_type,
       travels.destination AS name,
       travels.initiated_at,
       travels.user_id
      FROM travels
   UNION ALL
    SELECT interests.id,
-      'Interest'::text AS event_type,
+      'Interest'::text AS root_type,
       interests.name,
       interests.initiated_at,
       interests.user_id
      FROM interests
   UNION ALL
    SELECT independent_events.id,
-      'IndependentEvent'::text AS event_type,
+      'IndependentEvent'::text AS root_type,
       independent_events.name,
       independent_events.occurred_at AS initiated_at,
       independent_events.user_id
      FROM independent_events
   UNION ALL
    SELECT incidents.id,
-      'Incident'::text AS event_type,
+      'Incident'::text AS root_type,
       incidents.name,
       incidents.initiated_at,
       incidents.user_id
      FROM incidents
   UNION ALL
    SELECT incidents.id,
-      'Movie'::text AS event_type,
+      'Movie'::text AS root_type,
       incidents.name,
       incidents.initiated_at,
       incidents.user_id
      FROM incidents
   UNION ALL
    SELECT conflicts.id,
-      'Conflict'::text AS event_type,
+      'Conflict'::text AS root_type,
       conflicts."with" AS name,
       conflicts.initiated_at,
       conflicts.user_id

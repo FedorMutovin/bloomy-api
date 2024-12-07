@@ -38,10 +38,10 @@ RSpec.describe Api::V1::TravelsController do
           start_at:,
           end_at:,
           initiated_at:,
-          trigger: {
-            id: 'trigger_id',
-            event_type: 'some_event_type',
-            name: 'Trigger name'
+          origin_root: {
+            id: 'root_id',
+            root_type: 'some_root_type',
+            name: 'Root name'
           }
         }
       }

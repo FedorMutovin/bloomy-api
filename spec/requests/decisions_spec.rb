@@ -32,10 +32,10 @@ RSpec.describe Api::V1::DecisionsController do
           name: 'decision name',
           description: 'decision description',
           initiated_at:,
-          trigger: {
-            id: 'trigger_id',
-            event_type: 'some_event_type',
-            name: 'Trigger name'
+          origin_root: {
+            id: 'root_id',
+            root_type: 'some_root_type',
+            name: 'Root name'
           }
         }
       }

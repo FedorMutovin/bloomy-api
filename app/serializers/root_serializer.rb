@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class RootSerializer < Panko::Serializer
-  attributes :id, :event_type, :name
+  attributes :id, :root_type, :name
 end

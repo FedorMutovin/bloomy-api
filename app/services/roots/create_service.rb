@@ -18,13 +18,13 @@ module Roots
     end
 
     def after_create(root)
-      create_root_relationship(root) if params[:trigger].present?
+      create_root_relationship(root) if params[:origin_root].present?
     end
 
     def create_root_relationship(root)
       Roots::Relationships::CreateService.call(
-        triggerable_id: params[:trigger][:id],
-        triggerable_type: params[:trigger][:event_type],
+        triggerable_id: params[:origin_root][:id],
+        triggerable_type: params[:origin_root][:root_type],
         impactable_id: root.id,
         impactable_type: root.class.name,
         user_id: root.user_id

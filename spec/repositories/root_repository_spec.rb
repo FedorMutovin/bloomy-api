@@ -46,7 +46,7 @@ RSpec.describe RootRepository do
             .connection
             .execute("SELECT definition FROM pg_views WHERE viewname = '#{view_name}'")
             .first['definition']
-      available_types_list = sql.scan(/'([^']+)'\s*(?:::text)?\s+AS\s+event_type/mi).flatten.uniq
+      available_types_list = sql.scan(/'([^']+)'\s*(?:::text)?\s+AS\s+root_type/mi).flatten.uniq
       expect(described_class.available_types).to eq(available_types_list)
     end
   end

@@ -9,7 +9,7 @@ module Api
       end
 
       def create
-        result = validate_params(contract: Roots::CreateContract.new, params: params[:event_action])
+        result = validate_params(contract: Roots::CreateContract.new, params: params[:root_action])
 
         if result.success?
           action = Actions::CreateService.call(result.to_h.merge(user_id: current_user.id))

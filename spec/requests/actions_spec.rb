@@ -28,14 +28,14 @@ RSpec.describe Api::V1::ActionsController do
     let(:initiated_at) { '2024-11-11T17:03:32Z' }
     let!(:params) do
       {
-        event_action: {
+        root_action: {
           name: 'action name',
           description: 'action description',
           initiated_at:,
-          trigger: {
-            id: 'trigger_id',
-            event_type: 'some_event_type',
-            name: 'Trigger name'
+          origin_root: {
+            id: 'root_id',
+            root_type: 'some_root_type',
+            name: 'Root name'
           }
         }
       }
@@ -44,9 +44,9 @@ RSpec.describe Api::V1::ActionsController do
     let(:action) do
       build_stubbed(
         :action,
-        name: params[:event_action][:name],
-        description: params[:event_action][:description],
-        initiated_at: params[:event_action][:initiated_at]
+        name: params[:root_action][:name],
+        description: params[:root_action][:description],
+        initiated_at: params[:root_action][:initiated_at]
       )
     end
 
@@ -66,9 +66,9 @@ RSpec.describe Api::V1::ActionsController do
         json_response = response.parsed_body
 
         expect(json_response).to be_a(Hash)
-        expect(json_response['name']).to eq(params[:event_action][:name])
-        expect(json_response['description']).to eq(params[:event_action][:description])
-        expect(json_response['initiated_at']).to eq(params[:event_action][:initiated_at])
+        expect(json_response['name']).to eq(params[:root_action][:name])
+        expect(json_response['description']).to eq(params[:root_action][:description])
+        expect(json_response['initiated_at']).to eq(params[:root_action][:initiated_at])
       end
     end
   end

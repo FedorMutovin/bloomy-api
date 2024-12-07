@@ -16,22 +16,22 @@ RSpec.shared_examples 'Roots::CreateService' do
     end
 
     context 'when adding an roots relationship' do
-      let(:trigger_params) do
-        { trigger: { id: 'id', event_type: 'Goal' } }
+      let(:origin_root_params) do
+        { origin_root: { id: 'id', root_type: 'Goal' } }
       end
 
-      let(:params) { attributes.merge(trigger_params) }
+      let(:params) { attributes.merge(origin_root_params) }
       let(:record) { build_stubbed(record_factory, attributes.merge(user:)) }
 
-      it 'adds an roots relationship if trigger params is present' do
+      it 'adds an roots relationship if origin root params is present' do
         allow(repository_class).to receive(:add).and_return(record)
         allow(Roots::Relationships::CreateService).to receive(:call)
 
         service_call
 
         expect(Roots::Relationships::CreateService).to have_received(:call).with(
-          triggerable_id: trigger_params[:trigger][:id],
-          triggerable_type: trigger_params[:trigger][:event_type],
+          triggerable_id: origin_root_params[:origin_root][:id],
+          triggerable_type: origin_root_params[:origin_root][:root_type],
           impactable_id: record.id,
           impactable_type: record.class.name,
           user_id: user.id

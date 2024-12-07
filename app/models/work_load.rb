@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WorkLoad < ApplicationRecord
-  MAX_LOAD_VALUE = 2
+  MAX_LOAD_VALUE = 3
   MIN_LOAD_VALUE = 0
 
   belongs_to :work

@@ -3,8 +3,32 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::RootsController do
+  describe 'GET /api/v1/roots' do
+    let(:user) { create(:user) }
+
+    before do
+      create(:goal, user:, initiated_at: 1.day.from_now)
+      create(:task, user:, initiated_at: 2.days.from_now)
+      create(:travel, user:, initiated_at: 3.days.from_now)
+    end
+
+    it 'returns a list of events for a user with expected attributes' do
+      get api_v1_roots_path(user_id: user.id)
+
+      expect(response).to have_http_status(:success)
+      json_response = response.parsed_body
+
+      expect(json_response).to be_an(Array)
+      expect(json_response.count).to eq(3)
+
+      expect(json_response[2]['event_type']).to eq('Goal')
+      expect(json_response[1]['event_type']).to eq('Task')
+      expect(json_response[0]['event_type']).to eq('Travel')
+    end
+  end
+
   describe 'POST /api/v1/roots/unite' do
-    let(:user) { create(:user)}
+    let(:user) { create(:user) }
     let(:target) { build_stubbed(:goal, user:) }
     let(:source) { build_stubbed(:goal, user:) }
 
@@ -31,7 +55,7 @@ RSpec.describe Api::V1::RootsController do
         target_id: params[:roots_unite][:target][:id],
         target_type: params[:roots_unite][:target][:event_type],
         source_id: params[:roots_unite][:source][:id],
-        source_type: params[:roots_unite][:source][:event_type],
+        source_type: params[:roots_unite][:source][:event_type]
       )
     end
 

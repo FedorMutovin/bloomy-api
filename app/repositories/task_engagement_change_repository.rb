@@ -2,6 +2,6 @@
 
 class TaskEngagementChangeRepository
   def self.add(**params)
-    TaskEngagementChange.create!(**params)
+    TaskEngagementChange.create!(params)
   end
 end

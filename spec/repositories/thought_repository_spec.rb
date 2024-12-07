@@ -9,11 +9,11 @@ RSpec.describe ThoughtRepository do
     let!(:other_user_thought) { create(:thought) }
 
     it 'returns only thoughts for the specific user' do
-      expect(described_class.by_user_id(user_id: user.id)).to contain_exactly(thought)
+      expect(described_class.by_user_id(user.id)).to contain_exactly(thought)
     end
 
     it 'does not return thoughts of other users' do
-      result = described_class.by_user_id(user_id: user.id)
+      result = described_class.by_user_id(user.id)
       expect(result).not_to include(other_user_thought)
     end
 
@@ -21,7 +21,7 @@ RSpec.describe ThoughtRepository do
       let!(:old_thought) { create(:thought, user:, initiated_at: DateTime.current - 1.year) }
 
       it 'sorted by initiated_at: :desc' do
-        result = described_class.by_user_id(user_id: user.id)
+        result = described_class.by_user_id(user.id)
         expect(result.first).to eq(thought)
         expect(result.last).to eq(old_thought)
       end

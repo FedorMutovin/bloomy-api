@@ -15,11 +15,11 @@ RSpec.describe Roots::UniteContract do
       reason: 'Event Name',
       target: {
         id: target_id,
-        event_type: target_type,
+        event_type: target_type
       },
       source: {
         id: source_id,
-        event_type: source_type,
+        event_type: source_type
       }
     }
   end
@@ -39,8 +39,9 @@ RSpec.describe Roots::UniteContract do
   end
 
   context 'when rule(:source, :target)' do
-    context "when source and target have not the same root type" do
+    context 'when source and target have not the same root type' do
       let(:target_type) { 'Task' }
+
       it 'fails' do
         result = contract.call(params)
         expect(result.errors.filter(:base?).map(&:to_s))
@@ -48,8 +49,9 @@ RSpec.describe Roots::UniteContract do
       end
     end
 
-    context "when source and target have the same root" do
+    context 'when source and target have the same root' do
       let(:target_id) { source_id }
+
       it 'fails' do
         result = contract.call(params)
         expect(result.errors.filter(:base?).map(&:to_s))

@@ -2,6 +2,6 @@
 
 require 'rails_helper'
 
-RSpec.describe Events::Reflection do
+RSpec.describe Roots::Reflection do
   it { is_expected.to validate_presence_of(:description) }
 end

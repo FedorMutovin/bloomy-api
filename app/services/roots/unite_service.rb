@@ -2,10 +2,16 @@
 
 module Roots
   class UniteService < ApplicationService
+    DEFAULT_PARAMS = {
+      status: Status::UNITED
+    }.freeze
     param :params, reader: :private
 
     def call
-      unite_roots!
+      ActiveRecord::Base.transaction do
+        unite_roots!
+        update_source_root_status
+      end
     end
 
     private
@@ -19,6 +25,14 @@ module Roots
         user_id: params[:user_id],
         reason: params[:reason]
       )
+    end
+
+    def update_source_root_status
+      source_repository.update(params[:source][:id], **DEFAULT_PARAMS)
+    end
+
+    def source_repository
+      "#{params[:source][:event_type]}Repository".constantize
     end
   end
 end

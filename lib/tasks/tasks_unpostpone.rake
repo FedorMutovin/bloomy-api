@@ -3,6 +3,6 @@
 namespace :tasks do
   desc 'Unpostpone tasks where postponed_until is current datetime'
   task unpostpone: :environment do
-    Tasks::Unpostpone.call
+    Tasks::UnpostponeService.call
   end
 end

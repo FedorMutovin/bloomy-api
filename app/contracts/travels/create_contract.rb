@@ -8,7 +8,7 @@ module Travels
       required(:initiated_at).filled(:date_time)
       required(:start_at).filled(:date_time)
       required(:end_at).filled(:date_time)
-      optional(:trigger).hash(Triggers::CreateContract.schema)
+      optional(:origin_root).hash(Roots::OriginContract.schema)
     end
 
     rule(:end_at) do

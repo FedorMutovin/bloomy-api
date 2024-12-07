@@ -7,8 +7,9 @@ FactoryBot.define do
 
   factory :movie do
     name { generate(:movie_name) }
-    status { 'watched' }
+    status { Statuses::Movie::WATCHED }
     rating { 'interesting' }
+    initiated_at { DateTime.current }
     user
   end
 end

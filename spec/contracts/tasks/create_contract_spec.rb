@@ -11,12 +11,7 @@ RSpec.describe Tasks::CreateContract do
       priority: 1,
       initiated_at: DateTime.current,
       status: Status::IN_PROGRESS,
-      started_at: DateTime.current - 1.hour,
-      trigger: {
-        id: 'b5192329-c1c5-4202-a715-5536785fbf59',
-        event_type: 'Goal',
-        name: 'Trigger Event'
-      }
+      started_at: DateTime.current - 1.hour
     }
   end
 

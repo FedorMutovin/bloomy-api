@@ -2,9 +2,10 @@
 
 module Tasks
   class CreateContract < ApplicationContract
-    params(Events::CreateContract.schema) do
+    params(Roots::CreateContract.schema) do
       optional(:started_at).filled(:date_time)
       required(:status).filled(:string, included_in?: Statuses::Task::ALLOWED_FOR_CREATE)
+      required(:priority).value(:integer, gteq?: Root::MAX_PRIORITY, lteq?: Root::MIN_PRIORITY)
       optional(:deadline_at).filled(:date_time)
       optional(:engagement_changes).hash(EngagementChanges::CreateContract.schema)
       optional(:schedule).hash do

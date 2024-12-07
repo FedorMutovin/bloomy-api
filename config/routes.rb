@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       resources :wishes, only: %i[index create show]
       resources :tasks, only: %i[index create show]
       resources :actions, only: %i[index create]
-      resources :events, only: [:index]
+      resources :roots, only: [:index]
       resources :thoughts, only: %i[index create]
       resources :everyday_quotes, only: [:index]
       get 'users/current', to: 'users#current'

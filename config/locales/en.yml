@@ -1,6 +1,8 @@
 en:
   errors:
     roots:
+      create:
+        trigger_and_impact_can_not_be_same: "Root from and created root must be different"
       unite:
         rule_type_can_not_be_different: "Rule types cannot be different"
         root_can_not_be_same: "Root to unite and root to keep must be different"

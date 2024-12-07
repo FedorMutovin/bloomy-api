@@ -9,7 +9,7 @@ RSpec.describe Api::V1::SchedulesController do
     let(:scheduled_time) { 10.days.from_now }
     let(:completed) { false }
     let!(:schedule) do
-      create(:event_schedule,
+      create(:root_schedule,
              user:,
              scheduable: travel,
              scheduled_at: scheduled_time,

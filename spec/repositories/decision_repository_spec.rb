@@ -9,11 +9,11 @@ RSpec.describe DecisionRepository do
     let!(:other_user_decision) { create(:decision) }
 
     it 'returns only decisions for the specific user' do
-      expect(described_class.by_user_id(user_id: user.id)).to contain_exactly(decision)
+      expect(described_class.by_user_id(user.id)).to contain_exactly(decision)
     end
 
     it 'does not return decisions of other users' do
-      result = described_class.by_user_id(user_id: user.id)
+      result = described_class.by_user_id(user.id)
       expect(result).not_to include(other_user_decision)
     end
 
@@ -21,7 +21,7 @@ RSpec.describe DecisionRepository do
       let!(:old_decision) { create(:decision, user:, initiated_at: DateTime.current - 1.year) }
 
       it 'sorted by initiated_at: :desc' do
-        result = described_class.by_user_id(user_id: user.id)
+        result = described_class.by_user_id(user.id)
         expect(result.first).to eq(decision)
         expect(result.last).to eq(old_decision)
       end

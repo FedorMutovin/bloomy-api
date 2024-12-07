@@ -3,6 +3,11 @@
 module Api
   module V1
     class RootsController < BaseController
+      def index
+        events = RootRepository.by_user_id(current_user.id)
+        render json: Panko::ArraySerializer.new(events, each_serializer: RootSerializer).to_json
+      end
+
       def unite
         result = validate_params(contract: Roots::UniteContract.new, params: params[:roots_unite])
 

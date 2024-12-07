@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_25_184627) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_28_235301) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -71,8 +71,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_184627) do
     t.uuid "impactable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
     t.index ["impactable_type", "impactable_id"], name: "index_event_relationships_on_impactable"
     t.index ["triggerable_type", "triggerable_id"], name: "index_event_relationships_on_triggerable"
+    t.index ["user_id"], name: "index_event_relationships_on_user_id"
   end
 
   create_table "event_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -182,6 +184,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_184627) do
     t.string "status", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "initiated_at", null: false
     t.index ["user_id"], name: "index_movies_on_user_id"
   end
 
@@ -331,6 +334,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_184627) do
   add_foreign_key "activities", "users"
   add_foreign_key "conflicts", "users"
   add_foreign_key "decisions", "users"
+  add_foreign_key "event_relationships", "users"
   add_foreign_key "event_schedules", "users"
   add_foreign_key "everyday_quotes", "users"
   add_foreign_key "goal_engagement_changes", "goal_engagements"
@@ -353,7 +357,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_184627) do
   add_foreign_key "work_loads", "works"
   add_foreign_key "works", "users"
 
-  create_view "events", sql_definition: <<-SQL
+  create_view "roots", sql_definition: <<-SQL
       SELECT tasks.id,
       'Task'::text AS event_type,
       tasks.name,
@@ -433,6 +437,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_184627) do
   UNION ALL
    SELECT incidents.id,
       'Incident'::text AS event_type,
+      incidents.name,
+      incidents.initiated_at,
+      incidents.user_id
+     FROM incidents
+  UNION ALL
+   SELECT incidents.id,
+      'Movie'::text AS event_type,
       incidents.name,
       incidents.initiated_at,
       incidents.user_id

@@ -4,10 +4,11 @@ module Movies
   class CreateContract < ApplicationContract
     params do
       required(:name).filled(:string)
-      required(:status).filled(:string, included_in?: Statuses::Movie::ALLOWED_STATUSES)
+      required(:status).filled(:string, included_in?: Statuses::Movie::ALLOWED_FOR_CREATE)
+      required(:initiated_at).filled(:date_time)
       optional(:rating).filled(:string, included_in?: Movie::ALLOWED_RATINGS)
       optional(:completed_at).filled(:date_time)
-      optional(:trigger).hash(Triggers::CreateContract.schema)
+      optional(:origin_root).hash(Roots::OriginContract.schema)
     end
 
     rule(:completed_at) do

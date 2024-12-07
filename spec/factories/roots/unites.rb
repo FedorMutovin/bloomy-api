@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :root_unite, class: 'Roots::Unite' do
-    target { create(:goal) }
-    source { create(:goal) }
+    target factory: %i[goal]
+    source factory: %i[goal]
     reason { 'reason' }
     user
   end

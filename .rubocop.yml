@@ -43,3 +43,6 @@ RSpec/SpecFilePathFormat:
 
 Rails/DeprecatedActiveModelErrorsMethods:
   Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false

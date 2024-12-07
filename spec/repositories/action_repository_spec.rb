@@ -9,11 +9,11 @@ RSpec.describe ActionRepository do
     let!(:other_user_action) { create(:action) }
 
     it 'returns only actions for the specific user' do
-      expect(described_class.by_user_id(user_id: user.id)).to contain_exactly(action)
+      expect(described_class.by_user_id(user.id)).to contain_exactly(action)
     end
 
     it 'does not return actions of other users' do
-      result = described_class.by_user_id(user_id: user.id)
+      result = described_class.by_user_id(user.id)
       expect(result).not_to include(other_user_action)
     end
 
@@ -21,7 +21,7 @@ RSpec.describe ActionRepository do
       let!(:old_action) { create(:action, user:, initiated_at: DateTime.current - 1.year) }
 
       it 'sorted by initiated_at: :desc' do
-        result = described_class.by_user_id(user_id: user.id)
+        result = described_class.by_user_id(user.id)
         expect(result.first).to eq(action)
         expect(result.last).to eq(old_action)
       end

@@ -53,11 +53,11 @@ RSpec.describe Api::V1::HobbiesController do
       )
     end
 
-    let(:stubbed_create_service) { instance_double(Hobbies::Create) }
+    let(:stubbed_create_service) { instance_double(Hobbies::CreateService) }
 
     before do
       create(:user)
-      allow(Hobbies::Create).to receive(:new).and_return(stubbed_create_service)
+      allow(Hobbies::CreateService).to receive(:new).and_return(stubbed_create_service)
       allow(stubbed_create_service).to receive(:call).and_return(hobby)
     end
 

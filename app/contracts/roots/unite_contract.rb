@@ -4,8 +4,8 @@ module Roots
   class UniteContract < ApplicationContract
     params do
       required(:reason).filled(:string)
-      required(:source).hash(Triggers::CreateContract.schema)
-      required(:target).hash(Triggers::CreateContract.schema)
+      required(:source).hash(Roots::OriginContract.schema)
+      required(:target).hash(Roots::OriginContract.schema)
     end
 
     rule(:source, :target) do

@@ -58,11 +58,11 @@ RSpec.describe Api::V1::TravelsController do
       )
     end
 
-    let(:stubbed_create_service) { instance_double(Travels::Create) }
+    let(:stubbed_create_service) { instance_double(Travels::CreateService) }
 
     before do
       create(:user)
-      allow(Travels::Create).to receive(:new).and_return(stubbed_create_service)
+      allow(Travels::CreateService).to receive(:new).and_return(stubbed_create_service)
       allow(stubbed_create_service).to receive(:call).and_return(travel)
     end
 

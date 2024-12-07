@@ -10,7 +10,8 @@ RSpec.describe Movies::CreateContract do
       name: 'movie name',
       status: 'watched',
       rating: 'interesting',
-      completed_at: '2024-11-11T17:03:32Z'
+      completed_at: '2024-11-11T17:03:32Z',
+      initiated_at: '2022-11-10T17:03:32Z'
     }
   end
 
@@ -30,6 +31,11 @@ RSpec.describe Movies::CreateContract do
     it 'fails if status is missing' do
       result = contract.call(params.except(:status))
       expect(result.errors[:status]).to include('is missing')
+    end
+
+    it 'fails if initiated_at is missing' do
+      result = contract.call(params.except(:initiated_at))
+      expect(result.errors[:initiated_at]).to include('is missing')
     end
   end
 

@@ -7,4 +7,5 @@ class Status
   CANCELED = 'canceled'
   POSTPONED = 'postponed'
   SCHEDULED = 'scheduled'
+  UNITED = 'united'
 end

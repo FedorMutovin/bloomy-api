@@ -21,6 +21,7 @@ RSpec.describe Api::V1::MoviesController do
         expect(json_response.first['status']).to eq(movie.status)
         expect(json_response.first['rating']).to eq(movie.rating)
         expect(json_response.first['completed_at']).to eq(movie.completed_at)
+        expect(json_response.first['initiated_at']).to eq(movie.initiated_at.iso8601)
       end
     end
   end
@@ -33,6 +34,7 @@ RSpec.describe Api::V1::MoviesController do
           status: 'watched',
           rating: 'interesting',
           completed_at: '2024-11-11T17:03:32Z',
+          initiated_at: '2024-11-10T17:03:32Z',
           trigger: {
             id: 'trigger_id',
             event_type: 'some_event_type',
@@ -48,15 +50,16 @@ RSpec.describe Api::V1::MoviesController do
         name: params[:movie][:name],
         status: params[:movie][:status],
         rating: params[:movie][:rating],
-        completed_at: params[:movie][:completed_at]
+        completed_at: params[:movie][:completed_at],
+        initiated_at: params[:movie][:initiated_at]
       )
     end
 
-    let(:stubbed_create_service) { instance_double(Movies::Create) }
+    let(:stubbed_create_service) { instance_double(Movies::CreateService) }
 
     before do
       create(:user)
-      allow(Movies::Create).to receive(:new).and_return(stubbed_create_service)
+      allow(Movies::CreateService).to receive(:new).and_return(stubbed_create_service)
       allow(stubbed_create_service).to receive(:call).and_return(movie)
     end
 
@@ -72,6 +75,7 @@ RSpec.describe Api::V1::MoviesController do
         expect(json_response['status']).to eq(params[:movie][:status])
         expect(json_response['rating']).to eq(params[:movie][:rating])
         expect(json_response['completed_at']).to eq(params[:movie][:completed_at])
+        expect(json_response['initiated_at']).to eq(params[:movie][:initiated_at])
       end
     end
   end

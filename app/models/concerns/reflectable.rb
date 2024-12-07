@@ -4,6 +4,6 @@ module Reflectable
   extend ActiveSupport::Concern
 
   included do
-    has_many :reflections, as: :reflectable, class_name: 'Events::Reflection', dependent: :destroy
+    has_many :reflections, as: :reflectable, class_name: 'Roots::Reflection', dependent: :destroy
   end
 end

@@ -2,7 +2,8 @@
 
 require 'rails_helper'
 
-RSpec.describe Events::Relationship do
+RSpec.describe Roots::Relationship do
   it { is_expected.to belong_to(:triggerable) }
   it { is_expected.to belong_to(:impactable) }
+  it { is_expected.to belong_to(:user) }
 end

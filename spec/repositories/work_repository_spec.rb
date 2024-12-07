@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe WorkRepository do
-  describe '.by_user_id(user_id:)' do
+  describe '.by_user_id(user_id)' do
     let(:user) { create(:user) }
     let!(:work) { create(:work, user:) }
 
     it 'returns not activated wishes only for specific user' do
-      expect(described_class.by_user_id(user_id: user.id)).to match_array(work)
+      expect(described_class.by_user_id(user.id)).to match_array(work)
     end
   end
 
@@ -19,7 +19,7 @@ RSpec.describe WorkRepository do
     end
 
     it 'creates a wish' do
-      expect { described_class.add(params:) }.to change(Work, :count).by(1)
+      expect { described_class.add(**params) }.to change(Work, :count).by(1)
     end
   end
 end

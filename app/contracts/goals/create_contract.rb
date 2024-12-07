@@ -2,7 +2,8 @@
 
 module Goals
   class CreateContract < ApplicationContract
-    params(Events::CreateContract.schema) do
+    params(Roots::CreateContract.schema) do
+      required(:priority).value(:integer, gteq?: Root::MAX_PRIORITY, lteq?: Root::MIN_PRIORITY)
       optional(:started_at).filled(:date_time)
       optional(:deadline_at).filled(:date_time)
       optional(:status).filled(:string, included_in?: Statuses::Goal::ALLOWED_FOR_CREATE)

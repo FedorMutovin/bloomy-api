@@ -50,11 +50,11 @@ RSpec.describe Api::V1::DecisionsController do
       )
     end
 
-    let(:stubbed_create_service) { instance_double(Decisions::Create) }
+    let(:stubbed_create_service) { instance_double(Decisions::CreateService) }
 
     before do
       create(:user)
-      allow(Decisions::Create).to receive(:new).and_return(stubbed_create_service)
+      allow(Decisions::CreateService).to receive(:new).and_return(stubbed_create_service)
       allow(stubbed_create_service).to receive(:call).and_return(decision)
     end
 

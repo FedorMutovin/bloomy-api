@@ -5,7 +5,7 @@ module Thoughts
     params do
       required(:description).filled(:string)
       required(:initiated_at).filled(:date_time)
-      optional(:trigger).hash(Triggers::CreateContract.schema)
+      optional(:origin_root).hash(Roots::OriginContract.schema)
     end
   end
 end

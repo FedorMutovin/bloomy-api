@@ -4,6 +4,6 @@ module Scheduable
   extend ActiveSupport::Concern
 
   included do
-    has_one :schedule, as: :scheduable, class_name: 'Events::Schedule', dependent: :destroy
+    has_one :schedule, as: :scheduable, class_name: 'Roots::Schedule', dependent: :destroy
   end
 end

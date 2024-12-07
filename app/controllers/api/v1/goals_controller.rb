@@ -5,7 +5,7 @@ module Api
     class GoalsController < BaseController
       before_action :goal, only: %i[show]
       def index
-        goals = GoalRepository.by_user_id(user_id: current_user.id)
+        goals = GoalRepository.by_user_id(current_user.id)
         render json: Panko::ArraySerializer.new(goals, each_serializer: GoalSerializer).to_json
       end
 
@@ -17,7 +17,7 @@ module Api
         result = validate_params(contract: Goals::CreateContract.new, params: params[:goal])
 
         if result.success?
-          goal = Goals::Create.call(result.to_h.merge(user_id: current_user.id))
+          goal = Goals::CreateService.call(result.to_h.merge(user_id: current_user.id))
           render json: GoalSerializer.new.serialize(goal)
         else
           render json: { errors: result.errors.to_h }, status: :unprocessable_entity
@@ -27,7 +27,7 @@ module Api
       private
 
       def goal
-        @goal ||= GoalRepository.by_id(id: params[:id])
+        @goal ||= GoalRepository.by_id(params[:id])
       end
     end
   end

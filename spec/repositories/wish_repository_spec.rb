@@ -3,21 +3,21 @@
 require 'rails_helper'
 
 RSpec.describe WishRepository do
-  describe '.by_user_id(user_id:)' do
+  describe '.by_user_id(user_id)' do
     let(:user) { create(:user) }
     let!(:wish) { create(:wish, user:, priority: 0) }
 
     before { create(:wish, user:, priority: 0, activated_at: Time.zone.now) }
 
     it 'returns not activated wishes only for specific user' do
-      expect(described_class.by_user_id(user_id: user.id)).to match_array(wish)
+      expect(described_class.by_user_id(user.id)).to match_array(wish)
     end
 
     context 'with priority' do
       let!(:second_wish) { create(:wish, user:, priority: 1) }
 
       it 'sorted by priority: :asc' do
-        result = described_class.by_user_id(user_id: user.id)
+        result = described_class.by_user_id(user.id)
         expect(result.first).to eq(wish)
         expect(result.last).to eq(second_wish)
       end
@@ -35,12 +35,12 @@ RSpec.describe WishRepository do
     end
   end
 
-  describe '.by_id(id:)' do
+  describe '.by_id(id)' do
     let(:user) { create(:user) }
     let!(:wish) { create(:wish, user:) }
 
     it 'returns only wish for the specified id' do
-      expect(described_class.by_id(id: wish.id)).to eq wish
+      expect(described_class.by_id(wish.id)).to eq wish
     end
   end
 end

@@ -97,11 +97,11 @@ RSpec.describe Api::V1::GoalsController do
       )
     end
 
-    let(:stubbed_create_service) { instance_double(Goals::Create) }
+    let(:stubbed_create_service) { instance_double(Goals::CreateService) }
 
     before do
       create(:user)
-      allow(Goals::Create).to receive(:new).and_return(stubbed_create_service)
+      allow(Goals::CreateService).to receive(:new).and_return(stubbed_create_service)
       allow(stubbed_create_service).to receive(:call).and_return(goal)
     end
 

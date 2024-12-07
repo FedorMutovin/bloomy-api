@@ -2,6 +2,6 @@
 
 class GoalEngagementChangeRepository
   def self.add(**params)
-    GoalEngagementChange.create!(**params)
+    GoalEngagementChange.create!(params)
   end
 end

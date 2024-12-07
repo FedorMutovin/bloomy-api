@@ -5,7 +5,7 @@ module Statuses
     WATCHED = 'watched'
     WAITING = 'waiting'
 
-    ALLOWED_STATUSES = [
+    ALLOWED_FOR_CREATE = [
       WATCHED,
       WAITING
     ].freeze

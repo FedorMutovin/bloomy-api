@@ -63,11 +63,11 @@ RSpec.describe Api::V1::TasksController do
       )
     end
 
-    let(:stubbed_create_service) { instance_double(Tasks::Create) }
+    let(:stubbed_create_service) { instance_double(Tasks::CreateService) }
 
     before do
       create(:user)
-      allow(Tasks::Create).to receive(:new).and_return(stubbed_create_service)
+      allow(Tasks::CreateService).to receive(:new).and_return(stubbed_create_service)
       allow(stubbed_create_service).to receive(:call).and_return(task)
     end
 

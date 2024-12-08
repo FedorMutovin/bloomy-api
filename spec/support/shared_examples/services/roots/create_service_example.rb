@@ -5,11 +5,19 @@ RSpec.shared_examples 'Roots::CreateService' do
 
   let(:user) { create(:user) }
   let(:params) { attributes }
+  let(:record) { build_stubbed(record_factory, attributes.merge(user:)) }
+  let(:before_each) { -> {} }
 
   describe '#call' do
+    before do
+      allow(repository_class).to receive(:add).and_return(record)
+      allow(Roots::Relationships::CreateService).to receive(:call)
+
+      before_each.call
+    end
+
     context 'when creating a new root' do
       it 'creates a new root with the specified attributes' do
-        allow(repository_class).to receive(:add)
         service_call
         expect(repository_class).to have_received(:add).with(attributes)
       end
@@ -21,12 +29,8 @@ RSpec.shared_examples 'Roots::CreateService' do
       end
 
       let(:params) { attributes.merge(origin_root_params) }
-      let(:record) { build_stubbed(record_factory, attributes.merge(user:)) }
 
       it 'adds an roots relationship if origin root params is present' do
-        allow(repository_class).to receive(:add).and_return(record)
-        allow(Roots::Relationships::CreateService).to receive(:call)
-
         service_call
 
         expect(Roots::Relationships::CreateService).to have_received(:call).with(

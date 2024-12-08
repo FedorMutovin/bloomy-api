@@ -22,4 +22,17 @@ RSpec.describe WorkRepository do
       expect { described_class.add(**params) }.to change(Work, :count).by(1)
     end
   end
+
+  describe '.update(id, params)' do
+    let(:work) { create(:work) }
+    let(:params) do
+      { company_name: 'Kaseya' }
+    end
+
+    it 'updates a work' do
+      expect(work.company_name).not_to eq(params[:company_name])
+      described_class.update(work.id, **params)
+      expect(work.reload.company_name).to eq(params[:company_name])
+    end
+  end
 end

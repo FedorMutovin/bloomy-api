@@ -9,5 +9,9 @@ class WorkRepository
     def add(**params)
       Work.create!(params)
     end
+
+    def update(id, **params)
+      Work.find(id).update(params)
+    end
   end
 end

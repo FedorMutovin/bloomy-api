@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_07_170443) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_07_211737) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -454,6 +454,13 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_07_170443) do
       conflicts."with" AS name,
       conflicts.initiated_at,
       conflicts.user_id
-     FROM conflicts;
+     FROM conflicts
+  UNION ALL
+   SELECT works.id,
+      'Work'::text AS root_type,
+      works.company_name AS name,
+      works.start_date AS initiated_at,
+      works.user_id
+     FROM works;
   SQL
 end

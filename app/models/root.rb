@@ -5,7 +5,7 @@ class Root < ApplicationRecord
   MIN_PRIORITY = 4
   AVAILABLE_TYPES = %w[Task Wish Thought Action Goal Decision
                        Activity Hobby Travel Interest IndependentEvent
-                       Incident Movie Conflict].freeze
+                       Incident Movie Conflict Work].freeze
   self.primary_key = :id
   def readonly?
     true

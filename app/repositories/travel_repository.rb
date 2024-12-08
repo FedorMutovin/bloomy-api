@@ -3,7 +3,7 @@
 class TravelRepository
   class << self
     def by_user_id(user_id)
-      Travel.where(user_id:).order(initiated_at: :desc).to_a
+      Travel.where(user_id:).order(start_at: :desc).to_a
     end
 
     def add(**params)

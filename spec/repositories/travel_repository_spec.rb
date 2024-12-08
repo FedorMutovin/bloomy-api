@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe TravelRepository do
   describe '.by_user_id(user_id)' do
     let(:user) { create(:user) }
-    let!(:travel) { create(:travel, user:) }
+    let!(:travel) { create(:travel, user:, start_at: DateTime.current) }
     let!(:other_user_travel) { create(:travel) }
 
     it 'returns only travels for the specific user' do
@@ -18,7 +18,7 @@ RSpec.describe TravelRepository do
     end
 
     context 'with initiated at ordering' do
-      let!(:old_travel) { create(:travel, user:, initiated_at: DateTime.current - 1.year) }
+      let!(:old_travel) { create(:travel, user:, start_at: DateTime.current - 1.year) }
 
       it 'sorted by initiated_at: :desc' do
         result = described_class.by_user_id(user.id)
@@ -37,6 +37,19 @@ RSpec.describe TravelRepository do
 
     it 'creates a travel' do
       expect { described_class.add(**params) }.to change(Travel, :count).by(1)
+    end
+  end
+
+  describe '.update(id, params)' do
+    let(:travel) { create(:travel) }
+    let(:params) do
+      { destination: 'Krakow' }
+    end
+
+    it 'updates a travel' do
+      expect(travel.destination).not_to eq(params[:destination])
+      described_class.update(travel.id, **params)
+      expect(travel.reload.destination).to eq(params[:destination])
     end
   end
 end

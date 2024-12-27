@@ -47,7 +47,7 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 # gem "image_processing", "~> 1.2"
 group :development do
   # Database consistency check
-  gem 'database_consistency', '~> 1.7.25', require: false
+  gem 'database_consistency', '~> 2.0.2', require: false
 end
 
 group :development, :test do
